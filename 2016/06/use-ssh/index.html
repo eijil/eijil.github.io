@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.2" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.2" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.4.2',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="SSH的使用SSH是一种连接服务器的方式，使用SSH可以不必每次都输入用户名和密码 一、 Add SSH key to GithubMac1. 打开命令行工具，输入以下内容,替换你的邮箱名1$ssh-keygen -t rsa -C &amp;quot;your_email@example.com&amp;quot;  -t : [rsa | dsa ] 加密类型,默认rsa   -C : 添加一个注释  2.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="use ssh">
+<meta property="og:url" content="http://yoursite.com/2016/06/use-ssh/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="SSH的使用SSH是一种连接服务器的方式，使用SSH可以不必每次都输入用户名和密码 一、 Add SSH key to GithubMac1. 打开命令行工具，输入以下内容,替换你的邮箱名1$ssh-keygen -t rsa -C &amp;quot;your_email@example.com&amp;quot;  -t : [rsa | dsa ] 加密类型,默认rsa   -C : 添加一个注释  2.">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-10-19T03:35:32.885Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="use ssh">
+<meta name="twitter:description" content="SSH的使用SSH是一种连接服务器的方式，使用SSH可以不必每次都输入用户名和密码 一、 Add SSH key to GithubMac1. 打开命令行工具，输入以下内容,替换你的邮箱名1$ssh-keygen -t rsa -C &amp;quot;your_email@example.com&amp;quot;  -t : [rsa | dsa ] 加密类型,默认rsa   -C : 添加一个注释  2.">
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/06/use-ssh/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>use ssh | Hexo</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/use-ssh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="JIEL">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">use ssh
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2016-06-02 15:51:00" itemprop="dateCreated datePublished" datetime="2016-06-02T15:51:00+08:00">2016-06-02</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-10-19 11:35:32" itemprop="dateModified" datetime="2018-10-19T11:35:32+08:00">2018-10-19</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="SSH的使用"><a href="#SSH的使用" class="headerlink" title="SSH的使用"></a>SSH的使用</h1><p>SSH是一种连接服务器的方式，使用SSH可以不必每次都输入用户名和密码</p>
+<h2 id="一、-Add-SSH-key-to-Github"><a href="#一、-Add-SSH-key-to-Github" class="headerlink" title="一、 Add SSH key to Github"></a>一、 Add SSH key to Github</h2><h3 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h3><h5 id="1-打开命令行工具，输入以下内容-替换你的邮箱名"><a href="#1-打开命令行工具，输入以下内容-替换你的邮箱名" class="headerlink" title="1. 打开命令行工具，输入以下内容,替换你的邮箱名"></a>1. 打开命令行工具，输入以下内容,替换你的邮箱名</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ssh-keygen -t rsa -C &quot;your_email@example.com&quot;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>-t</code> : [rsa | dsa ] 加密类型,默认rsa</p>
+</blockquote>
+<blockquote>
+<p><code>-C</code> : 添加一个注释</p>
+</blockquote>
+<h5 id="2-生成SSH-KEY"><a href="#2-生成SSH-KEY" class="headerlink" title="2. 生成SSH-KEY"></a>2. 生成SSH-KEY</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file in which to save the key (/Users/you/.ssh/id_rsa):</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>第一步执行后会让你指定一个ssh key文件名，默认是id_rsa,这里我们不使用默认的,因为你可能不止一个git服务，可能你们公司使用了gitlab或者其它的，但如果你使用默认的待会可以直接跳过第<strong><em>4</em></strong>步</p>
+</blockquote>
+<p>输入文件名，需要带上目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Users/you/.ssh/github_rsa</span><br></pre></td></tr></table></figure>
+<h5 id="3-提示你输入密码，不要输入直接按确定就可以"><a href="#3-提示你输入密码，不要输入直接按确定就可以" class="headerlink" title="3. 提示你输入密码，不要输入直接按确定就可以"></a>3. 提示你输入密码，不要输入直接按确定就可以</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Enter passphrase (empty for no passphrase): [Type a passphrase]</span><br><span class="line">Enter same passphrase again: [Type passphrase again]</span><br></pre></td></tr></table></figure>
+<h5 id="4-多个SSH-KEY"><a href="#4-多个SSH-KEY" class="headerlink" title="4.多个SSH-KEY"></a>4.多个SSH-KEY</h5><p>添加config文件</p>
+<p>进入<code>~/.ssh</code>目录，使用vi或者你喜欢的编辑器添加<code>config</code>文件,保存以下内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Host github.com</span><br><span class="line">HostName github.com</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">IdentityFile ~/.ssh/github_rsa</span><br><span class="line"></span><br><span class="line">#如果有多个的话继续添加</span><br><span class="line">Host gitlab.com</span><br><span class="line">HostName gitlab.com</span><br><span class="line">PreferredAuthentications publickey</span><br><span class="line">IdentityFile ~/.ssh/gitlab_rsa</span><br></pre></td></tr></table></figure>
+<h5 id="5-添加ssh-key-到你的github账号"><a href="#5-添加ssh-key-到你的github账号" class="headerlink" title="5. 添加ssh-key 到你的github账号"></a>5. 添加ssh-key 到你的github账号</h5><p>复制SSH-key</p>
+<p><code>$ pbcopy &lt; ~/.ssh/github_rsa.pub</code></p>
+<p>添加到github账户，具体参考<a href="https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/#platform-mac" target="_blank" rel="noopener">官网教程</a></p>
+<h5 id="6-完成"><a href="#6-完成" class="headerlink" title="6. 完成"></a>6. 完成</h5><p>测试你的SSH链接是否成功</p>
+<p><code>$SSH -T git@github.com</code></p>
+<p>如果出现下面内容就是验证成功了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hi youname! You&apos;ve successfully authenticated, but GitHub does not provide shell access.</span><br></pre></td></tr></table></figure>
+<p>修改你的git仓库，开始使用吧</p>
+<p><code>git remote set-url origin git@github.com:you/xxx.git</code></p>
+<h2 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h2><p>windows下请使用<a href="http://www.softpedia.com/get/Programming/Other-Programming-Files/Cmder.shtml" target="_blank" rel="noopener">Cmder</a>或者GitBash等命令行工具</p>
+<blockquote>
+<p>~/.ssh 等于 c:/Users/you/.ssh<br>复制命令 clip &lt;</p>
+</blockquote>
+<h2 id="二、使用ssh公钥-私钥-实现免密码登录服务器"><a href="#二、使用ssh公钥-私钥-实现免密码登录服务器" class="headerlink" title="二、使用ssh公钥/私钥 实现免密码登录服务器"></a>二、使用ssh公钥/私钥 实现免密码登录服务器</h2><p>一般我们连线上服务器可能会经过一层或多层堡垒机，可以通过SSH生成后的公钥传到服务器上来实现免密码登录。</p>
+<p>假如有两台服务器A 登录 B</p>
+<p>A : 192.168.146.95</p>
+<p>B : 172.22.213.13</p>
+<h5 id="1-在A服务器上生成ssh-key"><a href="#1-在A服务器上生成ssh-key" class="headerlink" title="1.在A服务器上生成ssh-key"></a>1.在A服务器上生成ssh-key</h5><p><code>$ssh-keygen -t rsa -C &quot;your_email@example.com&quot;</code></p>
+<h5 id="2-将公钥传到B服务器-ssh-authorized-keys文件，使用scp-命令上传"><a href="#2-将公钥传到B服务器-ssh-authorized-keys文件，使用scp-命令上传" class="headerlink" title="2.将公钥传到B服务器.ssh/authorized_keys文件，使用scp 命令上传"></a>2.将公钥传到B服务器<code>.ssh/authorized_keys</code>文件，使用<code>scp</code> 命令上传</h5><p><code>scp ~/.ssh/id_rsa.pub 172.22.213.13:~/.ssh/authorized_keys</code></p>
+<h5 id="3-如果前面步骤都做完，那现在就可以无密码登录了"><a href="#3-如果前面步骤都做完，那现在就可以无密码登录了" class="headerlink" title="3.如果前面步骤都做完，那现在就可以无密码登录了"></a>3.如果前面步骤都做完，那现在就可以无密码登录了</h5><pre><code>ssh 172.22.213.13
+Last login: Mon Jun  6 15:04:46 2016 from 192.168.146.95
+
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">JIEL</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SSH的使用"><span class="nav-number">1.</span> <span class="nav-text">SSH的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、-Add-SSH-key-to-Github"><span class="nav-number">1.1.</span> <span class="nav-text">一、 Add SSH key to Github</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mac"><span class="nav-number">1.1.1.</span> <span class="nav-text">Mac</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-打开命令行工具，输入以下内容-替换你的邮箱名"><span class="nav-number">1.1.1.0.1.</span> <span class="nav-text">1. 打开命令行工具，输入以下内容,替换你的邮箱名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-生成SSH-KEY"><span class="nav-number">1.1.1.0.2.</span> <span class="nav-text">2. 生成SSH-KEY</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-提示你输入密码，不要输入直接按确定就可以"><span class="nav-number">1.1.1.0.3.</span> <span class="nav-text">3. 提示你输入密码，不要输入直接按确定就可以</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-多个SSH-KEY"><span class="nav-number">1.1.1.0.4.</span> <span class="nav-text">4.多个SSH-KEY</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-添加ssh-key-到你的github账号"><span class="nav-number">1.1.1.0.5.</span> <span class="nav-text">5. 添加ssh-key 到你的github账号</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-完成"><span class="nav-number">1.1.1.0.6.</span> <span class="nav-text">6. 完成</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#windows"><span class="nav-number">1.2.</span> <span class="nav-text">windows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、使用ssh公钥-私钥-实现免密码登录服务器"><span class="nav-number">1.3.</span> <span class="nav-text">二、使用ssh公钥/私钥 实现免密码登录服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-在A服务器上生成ssh-key"><span class="nav-number">1.3.0.0.1.</span> <span class="nav-text">1.在A服务器上生成ssh-key</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-将公钥传到B服务器-ssh-authorized-keys文件，使用scp-命令上传"><span class="nav-number">1.3.0.0.2.</span> <span class="nav-text">2.将公钥传到B服务器.ssh/authorized_keys文件，使用scp 命令上传</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-如果前面步骤都做完，那现在就可以无密码登录了"><span class="nav-number">1.3.0.0.3.</span> <span class="nav-text">3.如果前面步骤都做完，那现在就可以无密码登录了</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">JIEL</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
