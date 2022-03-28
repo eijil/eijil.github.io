@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="referrer" content="unsafe-url">
+  <meta name="google-site-verification" content="" />
+  
+  <title>Webgl基础-着色器</title>
+  <meta name="author" content="JIEL">
+  <meta name="description" content="hello world">
+  
+  
+  <meta property="og:title" content="Webgl基础-着色器"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/disqusjs.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- 
+      <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/styles/default.min.css">
+      
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> -->
+
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159221418-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-159221418-2');
+  </script>
+  <script src="/js/disqus.js"></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  </a>
+  <div class="description">
+    &nbsp;hello world
+  </div>
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title">
+        Webgl基础-着色器
+    </h1>
+  
+
+
+    </div>
+    <div class="page-meta center">
+      <time datetime="2022-03-28T02:00:00.000Z" itemprop="datePublished">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    2022-03-28
+</time>
+
+
+
+
+
+
+<div class="reading">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    <span id="busuanzi_value_page_pv">…</span>
+</div>
+
+    </div>
+    <hr>
+    
+    <div class="picture-container">
+      
+    </div>
+    <p>不会3D的程序员不是一个好司机，这个时代总得卷起来，不然可能就得去开滴滴。 在这元宇宙概念的背景下，上级领导也要求做点技术储备，看了一段时间3D框架后，顺便了解点webgl原理。</p>
+<h4 id="webgl"><a href="#webgl" class="headerlink" title="webgl"></a>webgl</h4><p><img src="/img/webgl/webgl.png"></p>
+
+    <hr>
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"></div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </a>
+        <!-- © eijil 2015-2021 -->
+    </div>
+    <!-- <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://frankenstein-ashen.now.sh/">
+            Guestbook
+        </a>
+    </div> -->
+</div>
+</div>
+</footer>
+  <script src="/js/zoom-image.js"></script>
+<script type="text/javascript">
+var imgArr = document.getElementsByTagName('img')
+for (var i = 0; i < imgArr.length; i += 1) {
+  zoom(imgArr[i])
+}
+
+// dropdown scripts
+function $(s) { return document.querySelector(s)}
+function $$(s) { return document.querySelectorAll(s) }
+var dropDownElArr = $$('.dropdown')
+for (var i = 0; i < dropDownElArr.length; i += 1) {
+  dropDownElArr[i].addEventListener('click', function(event) {
+  var content = this.querySelector('.dropdown-content')
+  event.stopPropagation()
+  if (content.className.indexOf('open') < 0) {
+    content.classList.add('open')
+  } else {
+    content.classList.remove('open')
+  }
+})
+}
+document.body.addEventListener('click', function() {
+  var dropDownContentElArr = $$('.dropdown-content')
+  for (var i = 0; i < dropDownContentElArr.length; i += 1) {
+    dropDownContentElArr[i].classList.remove('open')
+  }
+})
+</script>
+
+</body>
+</html>
