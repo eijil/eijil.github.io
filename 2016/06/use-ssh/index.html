@@ -97,9 +97,7 @@
 </blockquote>
 <h5 id="2-生成SSH-KEY"><a href="#2-生成SSH-KEY" class="headerlink" title="2. 生成SSH-KEY"></a>2. 生成SSH-KEY</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Generating public/private rsa key pair.</span><br><span class="line">Enter file in which to save the key (/Users/you/.ssh/id_rsa):</span><br></pre></td></tr></table></figure>
 
-<blockquote>
-<p>第一步执行后会让你指定一个ssh key文件名，默认是id_rsa,这里我们不使用默认的,因为你可能不止一个git服务，可能你们公司使用了gitlab或者其它的，但如果你使用默认的待会可以直接跳过第<em><strong>4</strong></em>步</p>
-</blockquote>
+<p>这一步执行后会让你指定一个ssh key文件名，默认是id_rsa,这里我们不使用默认的,因为你可能不止一个git服务，可能你们公司使用了gitlab或者其它的，但如果你使用默认的待会可以直接跳过第<em><strong>4</strong></em>步</p>
 <p>输入文件名，需要带上目录</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/Users/you/.ssh/github_rsa</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -120,9 +118,8 @@
 <p>修改你的git仓库，开始使用吧</p>
 <p><code>git remote set-url origin git@github.com:you/xxx.git</code></p>
 <h2 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h2><p>windows下请使用<a target="_blank" rel="noopener" href="http://www.softpedia.com/get/Programming/Other-Programming-Files/Cmder.shtml">Cmder</a>或者GitBash等命令行工具</p>
-<blockquote>
-<p>~/.ssh 等于 c:/Users/you/.ssh<br>复制命令 clip &lt;</p>
-</blockquote>
+<p>~/.ssh 等于 c:/Users/you/.ssh</p>
+<p>复制命令 clip &lt;</p>
 <h2 id="二、使用ssh公钥-私钥-实现免密码登录服务器"><a href="#二、使用ssh公钥-私钥-实现免密码登录服务器" class="headerlink" title="二、使用ssh公钥/私钥 实现免密码登录服务器"></a>二、使用ssh公钥/私钥 实现免密码登录服务器</h2><p>一般我们连线上服务器可能会经过一层或多层堡垒机，可以通过SSH生成后的公钥传到服务器上来实现免密码登录。</p>
 <p>假如有两台服务器A 登录 B</p>
 <p>A : 192.168.146.95</p>
