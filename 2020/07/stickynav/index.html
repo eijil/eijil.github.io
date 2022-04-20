@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="referrer" content="unsafe-url">
+  <meta name="google-site-verification" content="" />
+  
+  <title>移动端吸顶导航组件的实现</title>
+  <meta name="author" content="JIEL">
+  <meta name="description" content="hello world">
+  
+  
+  <meta property="og:title" content="移动端吸顶导航组件的实现"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/disqusjs.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- 
+      <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/styles/default.min.css">
+      
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> -->
+
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159221418-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-159221418-2');
+  </script>
+  <script src="/js/disqus.js"></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  </a>
+  <div class="description">
+    &nbsp;hello world
+  </div>
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title">
+        移动端吸顶导航组件的实现
+    </h1>
+  
+
+
+    </div>
+    <div class="page-meta center">
+      <time datetime="2020-07-01T07:51:00.000Z" itemprop="datePublished">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    2020-07-01
+</time>
+
+
+
+
+
+
+<div class="reading">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    <span id="busuanzi_value_page_pv">…</span>
+</div>
+
+    </div>
+    <hr>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>吸顶导航是营销会场类最常用的组件之一， 现在的会场页面是越来越长，如果从第一屏手动滑到最后一屏，还是一个挺累的操作，所以吸顶导航还是很有必要存在的，组件很常见，但是开源的不多，而且大多是PC版，几乎都不能满足业务的需求，所以决定自己写一个。</p>
+<p>先看下组件效果 <a target="_blank" rel="noopener" href="http://vue-sticky-nav.surge.sh/">demo</a></p>
+<p><img src="https://img12.360buyimg.com/imagetools/jfs/t1/126840/16/7166/349001/5f1002a3E143d2c4d/1d3c1cea309990e1.gif"></p>
+<h2 id="功能拆解"><a href="#功能拆解" class="headerlink" title="功能拆解"></a>功能拆解</h2><p>梳理下组件需要实现的功能</p>
+<ul>
+<li>到达首层吸顶和最后一层取消吸顶</li>
+<li>当前楼层高亮显示</li>
+<li>选中导航居中显示</li>
+<li>默认显示或滑到首层才显示</li>
+<li>滑动过程中控制隐藏显示</li>
+<li>展开显示更多</li>
+</ul>
+<h2 id="功能实现"><a href="#功能实现" class="headerlink" title="功能实现"></a>功能实现</h2><p>下面我会介绍下其中几个功能的实现方法，全部源码有兴趣的话可以点击<a target="_blank" rel="noopener" href="https://github.com/eijil/vue-sticky-nav">这里</a></p>
+<h3 id="导航选中居中"><a href="#导航选中居中" class="headerlink" title="导航选中居中"></a>导航选中居中</h3><h4 id="1-如何居中"><a href="#1-如何居中" class="headerlink" title="1. 如何居中"></a>1. 如何居中</h4><p>首先我们可以先考虑怎么居左，我们知道每一项距离左边的宽度是<code>m</code>，那居左就是<code>-m</code>,居中就是再减中线的位置，中线的位置如果是<code>M</code>，那就是<code>M-m</code>。</p>
+<h4 id="2-处理边界的情况"><a href="#2-处理边界的情况" class="headerlink" title="2. 处理边界的情况"></a>2. 处理边界的情况</h4><p>通过<code>M-m</code>，我们再来处理到达边界的问题，主要两种情况</p>
+<p>1.当M-m&gt;0的时候，则已经到达最左边</p>
+<p>2.当M-m &gt;于可滚动的距离（滚动条长度-可视长度），就是到达最右边</p>
+<p>实现代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*以下代码为了方便理解，略有删减*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> *  导航切换</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="title">watch</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="function"><span class="title">translateX</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">    <span class="comment">//滚动条位置修改</span></span><br><span class="line">    <span class="built_in">this</span>.scrollView.scrollLeft = <span class="built_in">Math</span>.abs(value)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line"><span class="attr">methods</span>:&#123;</span><br><span class="line">  <span class="function"><span class="title">center</span>(<span class="params">index</span>)</span>&#123;</span><br><span class="line">    <span class="comment">//当前选中项</span></span><br><span class="line">    <span class="keyword">const</span> activeItem = <span class="built_in">this</span>.$refs.navitem[index]</span><br><span class="line">    <span class="comment">//选中项距离左边的距离和宽度</span></span><br><span class="line">    <span class="keyword">const</span> &#123;offsetLeft,offsetWidth&#125; = activeItem</span><br><span class="line">    <span class="comment">//导航条可见的宽度</span></span><br><span class="line">    <span class="keyword">const</span> touchWidth  = <span class="built_in">this</span>.stickyNav.offsetWidth</span><br><span class="line">    <span class="comment">//可滚动宽度 = 整个滚动宽度 - 导航条可见的宽度</span></span><br><span class="line">    <span class="keyword">const</span> scrollWidth = <span class="built_in">this</span>.scrollView.scrollWidth - touchWidth</span><br><span class="line">    <span class="comment">//导航条中点 </span></span><br><span class="line">    <span class="keyword">const</span> half = (touchWidth - offsetWidth) / <span class="number">2</span></span><br><span class="line">    <span class="comment">//需要滚动的长度</span></span><br><span class="line">    <span class="keyword">let</span> scrollLeft = half - offsetLeft</span><br><span class="line">    <span class="comment">//到达最左边</span></span><br><span class="line">    scrollLeft &gt; <span class="number">0</span> &amp;&amp; (scrollLeft = <span class="number">0</span>);</span><br><span class="line">    <span class="comment">//到达最右边</span></span><br><span class="line">    scrollLeft &lt; -scrollWidth &amp;&amp; (scrollLeft = -scrollWidth)</span><br><span class="line">    <span class="built_in">this</span>.translateX = scrollLeft</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="导航缓动"><a href="#导航缓动" class="headerlink" title="导航缓动"></a>导航缓动</h3><p>实现了导航居中后我们再给他加一个缓动的效果，上面已经通过监听滚动的值去修改滚动条scrollLeft改变位置，由于watch可以监听值的变化，我们可以取到初始值和结束值，所以我们只需给数字变化添加一个缓动的过程，这里使用了一个插件<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/@tweenjs/tween.js">tweenjs</a>来实现这个功能。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tween <span class="keyword">from</span> <span class="string">&#x27;@tweenjs/tween.js&quot;</span></span><br><span class="line"><span class="string">watch:&#123;</span></span><br><span class="line"><span class="string">  translateX(star, end) &#123;</span></span><br><span class="line"><span class="string">    this.tween(star,end)</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">methods:&#123;</span></span><br><span class="line"><span class="string">    tween(start,end)&#123;</span></span><br><span class="line"><span class="string">        new TWEEN.Tween(&#123;</span></span><br><span class="line"><span class="string">          number: start</span></span><br><span class="line"><span class="string">        &#125;)</span></span><br><span class="line"><span class="string">        .to(&#123;</span></span><br><span class="line"><span class="string">          number: end</span></span><br><span class="line"><span class="string">        &#125;,</span></span><br><span class="line"><span class="string">        100)</span></span><br><span class="line"><span class="string">        .onUpdate(tween =&gt; &#123;</span></span><br><span class="line"><span class="string">          //改变滚动位置</span></span><br><span class="line"><span class="string">          this.scrollView.scrollLeft = -tween.number;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &#125;)</span></span><br><span class="line"><span class="string">        .start();</span></span><br><span class="line"><span class="string">        function animate()&#123;</span></span><br><span class="line"><span class="string">          if (TWEEN.update()) &#123;</span></span><br><span class="line"><span class="string">            requestAnimationFrame(animate)</span></span><br><span class="line"><span class="string">          &#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">        animate()</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"> </span></span><br></pre></td></tr></table></figure>
+<h3 id="滚动过程中的隐藏和显示"><a href="#滚动过程中的隐藏和显示" class="headerlink" title="滚动过程中的隐藏和显示"></a>滚动过程中的隐藏和显示</h3><p>实现这个功能我们需要知道用户当前的操作是上划还是下划，同样借助于vue中的watch功能，我们监听当前屏幕滚动的距离<code>scrollTop</code>,可以得到一个当前值和过去值，将两个值对比，当前值大于过去值的时候，则表示用户手指是向上滑（屏幕往下滚动）的，反之向下，代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*以下代码为了方便理解，略有删减*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">data</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">   <span class="comment">//控制导航是否显示隐藏的变量</span></span><br><span class="line">   <span class="attr">scrollHide</span>:<span class="literal">false</span>,</span><br><span class="line">   <span class="comment">//需要设置一个定时器，当用户一段时间没操作的时候，显示导航条</span></span><br><span class="line">   <span class="attr">scrollTimer</span>:<span class="literal">false</span></span><br><span class="line">   </span><br><span class="line">&#125;,</span><br><span class="line"><span class="attr">watch</span>:&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="function"><span class="title">scrollTop</span>(<span class="params">newValue, oldValue</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">const</span> delay = <span class="number">2000</span></span><br><span class="line">     <span class="comment">//向下滚动</span></span><br><span class="line">    <span class="keyword">if</span>(newValue &gt; oldvalue)&#123;</span><br><span class="line">       <span class="comment">//改变属性，控制隐藏显示</span></span><br><span class="line">      <span class="built_in">this</span>.scrollHide = <span class="literal">true</span></span><br><span class="line">      <span class="comment">//清除定时器</span></span><br><span class="line">      <span class="built_in">clearTimeout</span>(<span class="built_in">this</span>.scrollTimer)</span><br><span class="line">      <span class="built_in">this</span>.scrollTimer = <span class="literal">null</span></span><br><span class="line">    <span class="comment">//向上</span></span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="built_in">this</span>.scrollHide = fasle</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(!<span class="built_in">this</span>.scrollTimer)&#123;</span><br><span class="line">      <span class="built_in">this</span>.scrollTimer = <span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">          <span class="built_in">this</span>.scrollHide = fasle</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>向下滚动隐藏的功能是实现了，但还有一个问题，就是当点击导航栏的时候页面也是向下滚的，这时候还会触发上面的函数，这个时候体验效果有点奇怪，所以还需要优化下，当用户的操作是点击屏幕的时候不去执行隐藏导航的功能</p>
+<h4 id="改进版"><a href="#改进版" class="headerlink" title="改进版"></a>改进版</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*以下代码为了方便理解，略有删减*/</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">data</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">   <span class="comment">//控制导航是否显示隐藏的变量</span></span><br><span class="line">   <span class="attr">scrollHide</span>:<span class="literal">false</span>,</span><br><span class="line">   <span class="comment">//需要设置一个定时器，当用户一段时间没操作的时候，显示导航条</span></span><br><span class="line">   <span class="attr">scrollTimer</span>:<span class="literal">false</span>,</span><br><span class="line">   <span class="comment">//是否点击事件</span></span><br><span class="line">   <span class="attr">isClickScroll</span>: <span class="literal">false</span></span><br><span class="line">&#125;,</span><br><span class="line"><span class="attr">methods</span>:&#123;</span><br><span class="line">  <span class="comment">//点击时触发</span></span><br><span class="line">  <span class="function"><span class="title">change</span>(<span class="params">index</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.isClickScroll = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line"><span class="attr">watch</span>:&#123;</span><br><span class="line">  <span class="function"><span class="title">scrollTop</span>(<span class="params">newValue, oldValue</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">this</span>.isClickScroll)&#123;</span><br><span class="line">      <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.isClickScroll = <span class="literal">false</span></span><br><span class="line">      &#125;, <span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.isClickScroll) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">const</span> delay = <span class="number">2000</span></span><br><span class="line">    <span class="comment">//向下滚动</span></span><br><span class="line">    <span class="keyword">if</span>(newValue &gt; oldvalue)&#123;</span><br><span class="line">      <span class="comment">//改变属性，控制隐藏显示</span></span><br><span class="line">      <span class="built_in">this</span>.scrollHide = <span class="literal">true</span>;</span><br><span class="line">      <span class="comment">//清除定时器</span></span><br><span class="line">      <span class="built_in">clearTimeout</span>(<span class="built_in">this</span>.scrollTimer);</span><br><span class="line">      <span class="built_in">this</span>.scrollTimer = <span class="literal">null</span>;</span><br><span class="line">     <span class="comment">//向上</span></span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="built_in">this</span>.scrollHide = fasle;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(!<span class="built_in">this</span>.scrollTimer)&#123;</span><br><span class="line">       <span class="built_in">this</span>.scrollTimer = <span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">           <span class="built_in">this</span>.scrollHide = fasle;</span><br><span class="line">           <span class="built_in">this</span>.isClickScroll = <span class="literal">false</span>;</span><br><span class="line">       &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="遇到的一些问题"><a href="#遇到的一些问题" class="headerlink" title="遇到的一些问题"></a>遇到的一些问题</h2><h4 id="京东APP沉浸式兼容问题"><a href="#京东APP沉浸式兼容问题" class="headerlink" title="京东APP沉浸式兼容问题"></a>京东APP沉浸式兼容问题</h4><p>沉浸式效果：</p>
+<p><img src="https://img14.360buyimg.com/imagetools/jfs/t1/139199/37/3038/118655/5f111a44E79a3e8fe/7358d8da77a40604.jpg"></p>
+<p>沉浸式就是去掉了首屏标题栏的一种沉浸式体验，，如果开启了沉浸式，那么首屏标题栏是一个透明的状态，整个页面的高度就会上移，然后当你往下滑动的时候标题栏会出现，这时候导航栏如果吸顶，那么就会被标题栏给挡住看不到了，解决方法就是需要增加导航栏距离顶部的高度，而且是动态修改的，因为在APP中获取标题栏的高度是一个异步的操作，原先组件中并没考虑需要动态修改高度的情况，所以需要点小修改，先看下一开始是怎么初始化组件的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;StickyNav :options=<span class="string">&quot;options&quot;</span>/&gt;</span><br><span class="line"></span><br><span class="line">options:&#123;</span><br><span class="line">  <span class="attr">disabled</span>:<span class="literal">false</span>,</span><br><span class="line">  <span class="attr">stickyTop</span>:<span class="number">0</span>, <span class="comment">//距离顶部</span></span><br><span class="line">  <span class="attr">zIndex</span>:<span class="number">1000</span>,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们是通过stickyTop属性来控制导航栏距离顶部的距离，但是如果异步去修改这个对象的值是没有任何变化的，因为vue中是无法检测到对象的修改，</p>
+<p>1.通过watch的deep属性，设置为true可以监听options对象的修改,再重新复制到新对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">watch&#123;</span><br><span class="line">  <span class="attr">options</span>:&#123;</span><br><span class="line">      <span class="function"><span class="title">handler</span>(<span class="params">value</span>)</span>&#123;</span><br><span class="line">        assign(<span class="built_in">this</span>.stickyOptions,value)</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">deep</span>:<span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2.或者把stickyTop单独作为一个prop属性传给组件，这样可以实时变化</p>
+<h4 id="低端机兼容性问题"><a href="#低端机兼容性问题" class="headerlink" title="低端机兼容性问题"></a>低端机兼容性问题</h4><p>兼容性问题通常出现在一些很低端的手机上，比如android4.0,ios8、不过如果做到以下3点基本也没什么问题</p>
+<h4 id="1-ES6兼容"><a href="#1-ES6兼容" class="headerlink" title="1.ES6兼容"></a>1.ES6兼容</h4><p>通常我们webpack上已经配置了babel转换，但其实只是对语法的编译，比如你可以使用箭头函数等<br>如果你使用了Promise、Object.assign、includes等全局方法其实都不能被转换的，最简单的方法可以全局引入polyfill</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-polyfill --save</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;babel-polyfill&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>或者你的项目中只是用了一两个方法，引入整个polyfill太浪费，也可以使用一些第三方库，如  lodash/includes</p>
+<h4 id="2-CSS自动-webkit-前缀"><a href="#2-CSS自动-webkit-前缀" class="headerlink" title="2.CSS自动 -webkit- 前缀"></a>2.CSS自动 -webkit- 前缀</h4><p>还有就是样式不生效的问题，一般我们现在都是在webpack工程中配置<code>autoprefixer</code>去自动加前缀，不过要注意修改下package.json下的browserslist</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;browserslist&quot;: [</span><br><span class="line">    &quot;Android &gt;= 4.4&quot;,</span><br><span class="line">    &quot;iOS 8&quot;</span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-尽量不要使用flex布局"><a href="#3-尽量不要使用flex布局" class="headerlink" title="3.尽量不要使用flex布局"></a>3.尽量不要使用flex布局</h4><p>flex布局有某些很老的机型还是支持不是很好，用<code>inline-block</code>来代替</p>
+<h2 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h2><p>本文到这里就结束啦，组件<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/vue-sticky-nav">vue-stivky-nav</a>已经开源到npm上，欢迎使用和提问题,如果您对本文有什么问题也可以在底下留言讨论。</p>
+
+    <hr>
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"></div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </a>
+        <!-- © eijil 2015-2021 -->
+    </div>
+    <!-- <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://frankenstein-ashen.now.sh/">
+            Guestbook
+        </a>
+    </div> -->
+</div>
+</div>
+</footer>
+  <script src="/js/zoom-image.js"></script>
+<script type="text/javascript">
+var imgArr = document.getElementsByTagName('img')
+for (var i = 0; i < imgArr.length; i += 1) {
+  zoom(imgArr[i])
+}
+
+// dropdown scripts
+function $(s) { return document.querySelector(s)}
+function $$(s) { return document.querySelectorAll(s) }
+var dropDownElArr = $$('.dropdown')
+for (var i = 0; i < dropDownElArr.length; i += 1) {
+  dropDownElArr[i].addEventListener('click', function(event) {
+  var content = this.querySelector('.dropdown-content')
+  event.stopPropagation()
+  if (content.className.indexOf('open') < 0) {
+    content.classList.add('open')
+  } else {
+    content.classList.remove('open')
+  }
+})
+}
+document.body.addEventListener('click', function() {
+  var dropDownContentElArr = $$('.dropdown-content')
+  for (var i = 0; i < dropDownContentElArr.length; i += 1) {
+    dropDownContentElArr[i].classList.remove('open')
+  }
+})
+</script>
+
+</body>
+</html>

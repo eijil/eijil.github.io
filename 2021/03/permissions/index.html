@@ -1,0 +1,277 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="referrer" content="unsafe-url">
+  <meta name="google-site-verification" content="" />
+  
+  <title>[译] 在Javascript中处理用户权限</title>
+  <meta name="author" content="JIEL">
+  <meta name="description" content="hello world">
+  
+  
+  <meta property="og:title" content="[译] 在Javascript中处理用户权限"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/disqusjs.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- 
+      <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/styles/default.min.css">
+      
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> -->
+
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159221418-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-159221418-2');
+  </script>
+  <script src="/js/disqus.js"></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  </a>
+  <div class="description">
+    &nbsp;hello world
+  </div>
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title">
+        [译] 在Javascript中处理用户权限
+    </h1>
+  
+
+
+    </div>
+    <div class="page-meta center">
+      <time datetime="2021-03-02T07:51:00.000Z" itemprop="datePublished">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    2021-03-02
+</time>
+
+
+
+
+
+
+<div class="reading">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    <span id="busuanzi_value_page_pv">…</span>
+</div>
+
+    </div>
+    <hr>
+    
+    <div class="picture-container">
+      
+    </div>
+    <p>在开发用户界面的时候经常需要处理一些用户权限的逻辑，例如管理员和普通访客展示界面是不一样的等，您如何在前端处理这种逻辑？本文将介绍如何以一种优雅的方式来处理，或许可以给你提供一些思路</p>
+<blockquote>
+<p>原文地址：<a target="_blank" rel="noopener" href="https://css-tricks.com/handling-user-permissions-in-javascript/">https://css-tricks.com/handling-user-permissions-in-javascript/</a> </p>
+</blockquote>
+<p>所以,您正在开发一款新的web应用程序，比如食谱应用，文档管理器，甚至是您的私有云，您现在已经到了开发用户和权限的地步，以文档管理为例：您不仅需要管理员，还可能需要邀请具有只读访问权限的来宾或可以编辑但不能删除您的文件的人员，您如何在前端处理这种逻辑，而不至于用太多复杂的条件和检查使您的代码混乱？</p>
+<p>在本文中，我们将介绍一个示例实现，说明如何以优雅而简洁的方式处理此类情况。您的需求可能会有所不同，但我希望能您从中获得一些想法。</p>
+<p>让我们假设您已经构建了后端，为数据库中的所有用户添加了一个表，并且可能为角色提供了专用的列或属性。实现细节完全取决于您。为了这个演示，让我们使用以下角色：</p>
+<ul>
+<li><strong>Admin</strong>: 可以做任何事情，例如创建，删除和编辑自己的或他人的文档。</li>
+<li><strong>Editor</strong>: 可以创建，查看和编辑文件，但不能删除它们。</li>
+<li><strong>Guest</strong>: 只可以查看文件。</li>
+</ul>
+<p>像大多数现代的Web应用一样，您的应用可能会使用<code>RESTful</code> API与后端进行通信，所以让我们使用这个场景进行演示，即使您采用不同的技术，如<code>GraphQL</code>或服务器端渲染，您仍然可以应用我们即将要演示的模式。</p>
+<p>关键是在获取一些数据时，返回当前登录用户的角色（或权限）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">id</span>: <span class="number">1</span>,</span><br><span class="line">  <span class="attr">title</span>: <span class="string">&quot;My First Document&quot;</span>,</span><br><span class="line">  <span class="attr">authorId</span>: <span class="number">742</span>,</span><br><span class="line">  <span class="attr">accessLevel</span>: <span class="string">&quot;ADMIN&quot;</span>,</span><br><span class="line">  <span class="attr">content</span>: &#123;...&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这里，我们获取一个带有一些属性的文档，其中包括一个叫做用户角色的<code>accessLevel</code>的属性。这样我们才能知道登录的用户允许或不允许做什么。我们接下来的工作是在前端添加一些逻辑，以确保访客不会看到他们不应该看到的东西，反之亦然。</p>
+<blockquote>
+<p>理想情况下，您不应该只依靠前端来检查权限。一个有Web技术经验的人仍然可以在没有UI的情况下向服务器发送一个请求，目的是操纵数据，因此您的后端也应该进行检查。</p>
+</blockquote>
+<p>顺便说一下，这种模式与框架无关。无论您使用React，Vue甚至是一些野生的Vanilla JavaScript，都没关系。</p>
+<h2 id="定义常量"><a href="#定义常量" class="headerlink" title="定义常量"></a>定义常量</h2><p>第一步（可选，但强烈建议）是创建一些常量。这些将是简单的对象，包含所有的行为(Actions)、角色(Role)和其它重要功能。我喜欢把它们放到一个专门的文件中，可以命名为constants.js。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> actions = &#123;</span><br><span class="line">  <span class="attr">MODIFY_FILE</span>: <span class="string">&quot;MODIFY_FILE&quot;</span>,</span><br><span class="line">  <span class="attr">VIEW_FILE</span>: <span class="string">&quot;VIEW_FILE&quot;</span>,</span><br><span class="line">  <span class="attr">DELETE_FILE</span>: <span class="string">&quot;DELETE_FILE&quot;</span>,</span><br><span class="line">  <span class="attr">CREATE_FILE</span>: <span class="string">&quot;CREATE_FILE&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> roles = &#123;</span><br><span class="line">  <span class="attr">ADMIN</span>: <span class="string">&quot;ADMIN&quot;</span>,</span><br><span class="line">  <span class="attr">EDITOR</span>: <span class="string">&quot;EDITOR&quot;</span>,</span><br><span class="line">  <span class="attr">GUEST</span>: <span class="string">&quot;GUEST&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123; actions, roles &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果您有擅长使用<code>TypeScript</code>，您可以使用<a target="_blank" rel="noopener" href="https://www.typescriptlang.org/docs/handbook/enums.html">emuns</a>枚举来获得一个稍微干净的语法。</p>
+<p>为您的行为和角色创建一个常量集合有一些优势：</p>
+<ul>
+<li><strong>一个单一的来源</strong> 而不是查看您的整个代码库，您只需打开<code>constants.js</code>就可以看到您的应用内部的功能。这种方法也是非常可扩展的，比如说当您添加或删除行为时。</li>
+<li><strong>没有输入错误</strong> 您可以导入对象，而不必每次都手动键入一个角色或行为，因为它容易造成错别字和令人讨厌的调试环节，而是可以导入对象，并且借助您喜欢的编辑器的能力，可以免费获得建议和自动完成功能。如果您仍然输错名称，ESLint或其它工具很可能会对您大喊大叫，直到您修复它为止。</li>
+<li><strong>文档</strong> 如果您是在一个团队工作，新的团队成员会喜欢这种简单的方式，因为他们不需要通过大量的文件来了解存在哪些权限或操作，也可以使用JSDoc轻松地将其记录下来。</li>
+</ul>
+<p>使用这些常量是非常简单，导入并使用它们是这样的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; actions &#125; <span class="keyword">from</span> <span class="string">&quot;./constants.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(actions.CREATE_FILE)</span><br></pre></td></tr></table></figure>
+
+<h2 id="定义权限"><a href="#定义权限" class="headerlink" title="定义权限"></a>定义权限</h2><p>到了激动人心的部分：建立一个数据结构模型，将我们的行为映射到角色上。有很多方法可以解决这个问题，但我最喜欢下面这个方法。让我们创建一个新的文件，把它叫做<code>permissions.js</code>，然后在里面放一些代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; actions, roles &#125; <span class="keyword">from</span> <span class="string">&quot;./constants.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mappings = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line"></span><br><span class="line">mappings.set(actions.MODIFY_FILE, [roles.ADMIN, roles.EDITOR])</span><br><span class="line">mappings.set(actions.VIEW_FILE, [roles.ADMIN, roles.EDITOR, roles.GUEST])</span><br><span class="line">mappings.set(actions.DELETE_FILE, [roles.ADMIN])</span><br><span class="line">mappings.set(actions.CREATE_FILE, [roles.ADMIN, roles.EDITOR])</span><br></pre></td></tr></table></figure>
+
+<p>让我们一步一步地了解一下：</p>
+<ul>
+<li>首先，我们需要导入我们的常量。</li>
+<li>然后我们创建一个新的<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">JavaScript Map</a>，称为mappings。我们也可以使用任何其它的数据结构，比如对象，数组，我喜欢使用Maps，因为它们提供了一些方便的方法，比如.has()、.get()等。</li>
+<li>接下来，我们为我们的应用程序的每个行为添加（或者说设置）一个新的键值对。行为作为键，我们通过它来获取执行所述行为所需的角色。至于值，我们定义一个必要的角色数组。</li>
+</ul>
+<p>这种方法可能一开始看起来很奇怪（对我来说确实如此），但随着时间的推移，我学会了欣赏它。其好处是显而易见的，特别是在有大量行为和角色的大型应用中。</p>
+<ul>
+<li><p><strong>同样，只有一个来源</strong> 您需要知道编辑一个文档需要什么角色吗？没问题，到<code>permissions.js</code>里找找看。 </p>
+</li>
+<li><p><strong>修改业务逻辑是出奇的简单</strong> 假设您的产品经理决定，从明天开始，允许编辑删除文件；只需将他们的角色添加到DELETE_FILE条目中，然后就可以了。添加新的角色也是如此：在映射变量中添加更多的条目，就可以了。</p>
+</li>
+<li><p><strong>可测试的</strong> 您可以使用<a href="#test">snapshot tests</a>来确保这些映射里面没有任何意外的变化在代码评审期间也更清晰。</p>
+</li>
+</ul>
+<p>上面的例子相当简单，可以扩展到更复杂的情况。例如，如果您有具有不同角色访问权限的不同文件类型。在本文的最后，我们将对此进行更多的讨论。</p>
+<h2 id="在用户界面中检查权限"><a href="#在用户界面中检查权限" class="headerlink" title="在用户界面中检查权限"></a>在用户界面中检查权限</h2><p>我们定义了所有的行为和角色，并创建了一个<code>map</code>来解释谁可以做什么。现在我们需要实现一个函数，以便我们在用户界面中使用并检查这些角色。</p>
+<p>当创建这样的新行为时，我总是喜欢从API的外观表现开始，之后，我会实现该API背后的实际逻辑。</p>
+<p>假如我们有一个<code>React</code>组件，可以渲染一个下拉菜单。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Dropdown</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">      &lt;li&gt;&lt;button type=&quot;button&quot;&gt;刷新&lt;/button&gt;&lt;li&gt;</span><br><span class="line">      &lt;li&gt;&lt;button type=&quot;button&quot;&gt;重命名&lt;/button&gt;&lt;li&gt;</span><br><span class="line">      &lt;li&gt;&lt;button type=&quot;button&quot;&gt;复制&lt;/button&gt;&lt;li&gt;</span><br><span class="line">      &lt;li&gt;&lt;button type=&quot;button&quot;&gt;删除&lt;/button&gt;&lt;li&gt;</span><br><span class="line">    &lt;/ul&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>显然，我们不希望访客看到，也不希望他们点击 “删除 “或 “重命名 “选项，但我们希望他们看到 “刷新”。另一方面，作者应该看到除了 “删除 “以外的所有内容。我想象一些API是这样的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hasPermission(file, actions.DELETE_FILE)</span><br></pre></td></tr></table></figure>
+<p>第一个参数是文件本身，由我们的<code>REST API</code>获取。它应该包含之前的<code>accessLevel</code>属性，可以是<code>ADMIN</code>、<code>EDITOR</code>或<code>GUEST</code>。由于同一个用户在不同的文件中可能有不同的权限，我们总是需要提供这个参数。</p>
+<p>至于第二个参数，我们传递一个操作，比如删除文件。然后，如果当前登录的用户有该操作的权限，该函数应该返回一个布尔值<code>true</code>，如果没有，则返回<code>false</code>。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hasPermission <span class="keyword">from</span> <span class="string">&quot;./permissions.js&quot;</span></span><br><span class="line"><span class="keyword">import</span> &#123; actions &#125; <span class="keyword">from</span> <span class="string">&quot;./constants.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Dropdown</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span></span><br><span class="line"><span class="xml">      &#123;hasPermission(file, actions.VIEW_FILE) &amp;&amp; (</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>&gt;</span>刷新<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span><br><span class="line"><span class="xml">      )&#125;</span></span><br><span class="line"><span class="xml">      &#123;hasPermission(file, actions.MODIFY_FILE) &amp;&amp; (</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>&gt;</span>重命名<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span><br><span class="line"><span class="xml">      )&#125;</span></span><br><span class="line"><span class="xml">      &#123;hasPermission(file, actions.CREATE_FILE) &amp;&amp; (</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>&gt;</span>复制<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span><br><span class="line"><span class="xml">      )&#125;</span></span><br><span class="line"><span class="xml">      &#123;hasPermission(file, actions.DELETE_FILE) &amp;&amp; (</span></span><br><span class="line"><span class="xml">        <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></span><br><span class="line"><span class="xml">      )&#125;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>您可能想找一个不太冗长的函数名称，甚至可能想用不同的方式来实现整个逻辑(我想到了柯里化(Currying))，但对我来说，这已经做得相当不错了，即使是在权限超级复杂的应用中。当然，JSX看起来比较杂乱，但这是一个小小的代价。在整个应用中始终如一地使用这种模式，会让权限变得更干净、更直观易懂。</p>
+<p>如果您还不相信，让我们看看没有<code>hasPermission</code>函数下的情况下会是什么样子：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">return (</span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    &#123;[&#x27;ADMIN&#x27;, &#x27;EDITOR&#x27;, &#x27;GUEST&#x27;].includes(file.accessLevel) &amp;&amp; (</span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>&gt;</span>Refresh<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    )&#125;</span><br><span class="line">    &#123;[&#x27;ADMIN&#x27;, &#x27;EDITOR&#x27;].includes(file.accessLevel) &amp;&amp; (</span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>&gt;</span>Rename<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    )&#125;</span><br><span class="line">    &#123;[&#x27;ADMIN&#x27;, &#x27;EDITOR&#x27;].includes(file.accessLevel) &amp;&amp; (</span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>&gt;</span>Duplicate<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    )&#125;</span><br><span class="line">    &#123;file.accessLevel == &quot;ADMIN&quot; &amp;&amp; (</span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;button&quot;</span>&gt;</span>Delete<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    )&#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>您可能会说，这看起来还不错，但想想如果添加更多的逻辑，如许可证检查或更细粒度的权限，会发生什么。在我们这个<br>行业，事情往往会很快失控。</p>
+<p>您是否在想，既然每个人都可能会看到 “刷新 “按钮，为什么我们需要第一次权限检查？我喜欢把它放在那里，因为您永远不知道将来会发生什么变化。一个新的角色可能会被引入，甚至可能看不到这个按钮。在这种情况下，您只需要更新您的 <code>permissions.js</code>，就可以不用管这个组件了，这样Git提交的时候就会更干净，也会减少出错的机</p>
+<h2 id="实现权限检查器"><a href="#实现权限检查器" class="headerlink" title="实现权限检查器"></a>实现权限检查器</h2><p>最后，是时候实现将这一切粘合在一起的功能了：行为、角色和UI。实现的方法很简单。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> mappings <span class="keyword">from</span> <span class="string">&quot;./permissions.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hasPermission</span>(<span class="params">file, action</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!file?.accessLevel) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (mappings.has(action)) &#123;</span><br><span class="line">    <span class="keyword">return</span> mappings.get(action).includes(file.accessLevel)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> hasPermission</span><br><span class="line"><span class="keyword">export</span> &#123; actions, roles &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>您可以把上面的代码放到一个单独的文件中，甚至是permissions.js中。我个人将它们放在一个文件中。</p>
+<p>让我们来消化一下这里发生的事情：</p>
+<ol>
+<li><p>我们定义一个新的函数，<code>hasPermission</code>，接收一个file参数(来自后端数据)和我们要执行的操作</p>
+</li>
+<li><p>作为一个失败安全机制，如果由于某些原因，文件为<code>null</code>或不包含访问<code>accessLevel</code>属性，我们返回<code>false</code>。最好格外小心，不要因为代码中的一个小故障或一些错误而将 “秘密 “信息暴露给用户。</p>
+</li>
+<li><p>来到核心，我们检查<code>mappings</code>是否包含我们正在寻找的行为。如果是，我们可以安全地获取它的值（记住，它是一个角色数组），并检查我们当前登录的用户是否拥有该行为所需的角色。这要么返回<code>true</code>，要么返回<code>false</code>。</p>
+</li>
+<li><p>最后，如果<code>mappings</code>没有包含我们正在寻找的行为（可能是代码中的错误或再次出现小故障），我们返回false以确保安全。</p>
+</li>
+<li><p>在最后两行，我们不仅要导出<code>hasPermission</code>函数，还要重新导出我们的常量，以方便开发者。这样，我们就可以在一行中导入所有的实用程序。</p>
+</li>
+</ol>
+<h2 id="更多使用案例"><a href="#更多使用案例" class="headerlink" title="更多使用案例"></a>更多使用案例</h2><p>所示代码出于演示目的非常简单。不过，您还是可以把它作为您的应用程序的基础，并据此塑造它。我认为它是任何JavaScript驱动的应用程序实现用户角色和权限的良好起点。</p>
+<p>通过一点重构，您甚至可以重复使用这个模式来检查一些不同的东西，比如许可证(licenses)。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import &#123; actions, licenses &#125; from &quot;./constants.js&quot;</span><br><span class="line"></span><br><span class="line">const mappings = new Map()</span><br><span class="line"></span><br><span class="line">mappings.set(actions.MODIFY_FILE, [licenses.PAID])</span><br><span class="line">mappings.set(actions.VIEW_FILE, [licenses.FREE, licenses.PAID])</span><br><span class="line">mappings.set(actions.DELETE_FILE, [licenses.FREE, licenses.PAID])</span><br><span class="line">mappings.set(actions.CREATE_FILE, [licenses.PAID])</span><br><span class="line"></span><br><span class="line">function hasLicense(user, action) &#123;</span><br><span class="line">  if (mappings.has(action)) &#123;</span><br><span class="line">    return mappings.get(action).includes(user.license)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们声明用户的<code>license</code>属性，而不是用户的角色：同样的输入，同样的输出，完全不同的背景。</p>
+<p>在我的团队中，我们需要同时或单独检查用户角色和许可证，当我们选择这个模式时，我们为不同的检查创建了不同的函数，并将两种检查重新组合到一个新的函数中，我们最终使用的是<code>hasAccess</code> util：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hasAccess</span>(<span class="params">file, user, action</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> hasPermission(file, action) &amp;&amp; hasLicense(user, action)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>每次调用<code>hasAccess</code>时传递3个参数有点不理想，您可能会在您的应用中找到一种方法来解决这个问题（比如<code>Currying</code>或<code>global state</code>）。在我们的应用中，我们使用了包含用户信息的全局存储，所以我们可以简单地删除第2个参数，然后从存储中获取这些信息来代替。</p>
+<p>您还可以在权限结构方面更深入。您是否有不同类型的文件（或实体，通俗点说）？您是否想根据用户的许可证启用某些文件类型？让我们以上面的例子为例，让它稍微强大一点：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mappings = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line"></span><br><span class="line">mappings.set(</span><br><span class="line">  actions.EXPORT_FILE,</span><br><span class="line">  <span class="keyword">new</span> <span class="built_in">Map</span>([</span><br><span class="line">    [types.PDF, [licenses.FREE, licenses.PAID]],</span><br><span class="line">    [types.DOCX, [licenses.PAID]],</span><br><span class="line">    [types.XLSX, [licenses.PAID]],</span><br><span class="line">    [types.PPTX, [licenses.PAID]]</span><br><span class="line">  ])</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>这为我们的权限检查器增加了一个全新的层次。现在，我们可以为一个行为拥有不同类型的实体。让我们假设您想为您的文件提供一个导出功能（EXPORT_FILE)，但您希望您的用户为您建立的那个超级漂亮的Microsoft Office转换器付费（我们不直接提供一个数组，而是在行为中嵌套第二个Map，并传递我们想要覆盖的所有文件类型。您会问，为什么要使用Map？和我前面提到的原因一样：它提供了一些友好的方法，比如.has()，不过，您可以随意使用一些不同的方法。</p>
+<p>随着最近的更改，我们的<code>hasLicense</code>功能已经不能满足需要了，所以是时候稍微更新一下了。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hasLicense</span>(<span class="params">user, file, action</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!user || !file) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (mappings.has(action)) &#123;</span><br><span class="line">    <span class="keyword">const</span> mapping = mappings.get(action)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mapping.has(file.type)) &#123;</span><br><span class="line">      <span class="keyword">return</span> mapping.get(file.type).includes(user.license)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不知道是不是只是我个人的感觉，即使复杂度增加了，是不是看起来还是超级易读？</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a><a id="test">测试</a></h2><p>如果您想确保您的应用能按预期工作，即使在代码重构或引入新功能后，您最好准备好一些测试覆盖率。关于测试用户权限，您可以使用不同的方式：</p>
+<ul>
+<li><p>创建用于映射，操作，类型等的快照测试。这可以在<code>Jest</code>或其它测试框架中轻松实现，并确保没有任何东西意外地通过代码审查。不过如果权限一直在变化，更新这些快照可能会很繁琐。</p>
+</li>
+<li><p>为<code>hasLicense</code>或<code>hasPermission</code>添加单元测试，并通过对一些实际的测试用例进行硬编码来断言该函数正在按预期工作。单元测试在大多数情况下是一个好主意，因为您想确保返回的是正确的值。</p>
+</li>
+<li><p>除了确保内部逻辑工作，您还可以结合您的常量使用额外的快照测试来覆盖每一个场景。我的团队使用了类似的东西。</p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.values(actions).forEach(<span class="function">(<span class="params">action</span>) =&gt;</span> &#123;</span><br><span class="line">  describe(action.toLowerCase(), <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">Object</span>.values(licenses).forEach(<span class="function">(<span class="params">license</span>) =&gt;</span> &#123;</span><br><span class="line">      it(license.toLowerCase(), <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        expect(hasLicense(&#123; <span class="attr">type</span>: <span class="string">&#x27;PDF&#x27;</span> &#125;, &#123; license &#125;, action)).toMatchSnapshot()</span><br><span class="line">        expect(hasLicense(&#123; <span class="attr">type</span>: <span class="string">&#x27;DOCX&#x27;</span> &#125;, &#123; license &#125;, action)).toMatchSnapshot()</span><br><span class="line">        expect(hasLicense(&#123; <span class="attr">type</span>: <span class="string">&#x27;XLSX&#x27;</span> &#125;, &#123; license &#125;, action)).toMatchSnapshot()</span><br><span class="line">        expect(hasLicense(&#123; <span class="attr">type</span>: <span class="string">&#x27;PPTX&#x27;</span> &#125;, &#123; license &#125;, action)).toMatchSnapshot()</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但同样，个人的喜好和测试方式也有很多不同。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>就是这样！ 希望您能够在下一个项目中获得一些想法或灵感，这种模式可能是您想要的的。总结一下它的一些优点：</p>
+<ul>
+<li><p><strong>在您的UI（组件）中不再需要复杂的条件或逻辑</strong> 您可以依靠<code>hasPermission</code>函数的返回值，并根据该值轻松地显示和隐藏元素。能够将业务逻辑从您的UI中分离出来，有助于提供一个更干净、更可维护的代码库。</p>
+</li>
+<li><p><strong>您的权限的单一真相来源</strong>. 与其通过许多文件来了解用户可以或不可以看到什么，不如到权限<code>mappings</code>中去看看。这使得扩展和改变用户权限变得轻而易举，因为您可能甚至不需要接触任何的标记</p>
+</li>
+<li><p><strong>很容易测试</strong> 不管您是决定快照测试，还是与其它组件的集成测试，还是其它测试，集中化的权限都可以轻松地编写测试。</p>
+</li>
+<li><p><strong>文档</strong> 您不需要用<code>TypeScript</code>编写您的应用程序，就能从自动补全或代码验证中受益；使用预定义的常量来处理行为、角色、<code>licenses</code>等，可以减少恼人的错别字，让工作更请轻松。此外，其它团队成员可以很容易地发现哪些行为、角色或任何东西是可用的，以及它们在哪里被使用。</p>
+</li>
+</ul>
+<p>假设您想看这个模式的完整演示，可以去这个<a target="_blank" rel="noopener" href="https://codesandbox.io/s/permission-demo-ci4i2?file=/src/App.js">CodeSandbox</a>，用React玩玩这个想法。它包括了不同的权限检查，甚至还有一些测试范围。</p>
+<p>对此您有什么看法吗？您有没有类似的方法来处理这种事情，？我一直对其他人想出的办法很感兴趣，欢迎在评论区发表任何反馈意见。谢谢!</p>
+
+    <hr>
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"></div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </a>
+        <!-- © eijil 2015-2021 -->
+    </div>
+    <!-- <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://frankenstein-ashen.now.sh/">
+            Guestbook
+        </a>
+    </div> -->
+</div>
+</div>
+</footer>
+  <script src="/js/zoom-image.js"></script>
+<script type="text/javascript">
+var imgArr = document.getElementsByTagName('img')
+for (var i = 0; i < imgArr.length; i += 1) {
+  zoom(imgArr[i])
+}
+
+// dropdown scripts
+function $(s) { return document.querySelector(s)}
+function $$(s) { return document.querySelectorAll(s) }
+var dropDownElArr = $$('.dropdown')
+for (var i = 0; i < dropDownElArr.length; i += 1) {
+  dropDownElArr[i].addEventListener('click', function(event) {
+  var content = this.querySelector('.dropdown-content')
+  event.stopPropagation()
+  if (content.className.indexOf('open') < 0) {
+    content.classList.add('open')
+  } else {
+    content.classList.remove('open')
+  }
+})
+}
+document.body.addEventListener('click', function() {
+  var dropDownContentElArr = $$('.dropdown-content')
+  for (var i = 0; i < dropDownContentElArr.length; i += 1) {
+    dropDownContentElArr[i].classList.remove('open')
+  }
+})
+</script>
+
+</body>
+</html>

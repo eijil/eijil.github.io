@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="referrer" content="unsafe-url">
+  <meta name="google-site-verification" content="" />
+  
+  <title>使用Expect快速登录服务器</title>
+  <meta name="author" content="JIEL">
+  <meta name="description" content="hello world">
+  
+  
+  <meta property="og:title" content="使用Expect快速登录服务器"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/disqusjs.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- 
+      <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/styles/default.min.css">
+      
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> -->
+
+  
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159221418-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-159221418-2');
+  </script>
+  <script src="/js/disqus.js"></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  </a>
+  <div class="description">
+    &nbsp;hello world
+  </div>
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title">
+        使用Expect快速登录服务器
+    </h1>
+  
+
+
+    </div>
+    <div class="page-meta center">
+      <time datetime="2020-03-12T16:00:00.000Z" itemprop="datePublished">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    2020-03-13
+</time>
+
+
+
+
+
+
+<div class="reading">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    <span id="busuanzi_value_page_pv">…</span>
+</div>
+
+    </div>
+    <hr>
+    
+    <div class="picture-container">
+      
+    </div>
+    <p>前段时间开发中台项目的时候经常需要频繁登录生产服务器去修改代码，但通常企业为了服务器安全，需要通过跳板机来链接，如下图，每次都需要先登录两台服务器才能链接到正式服务器，非常繁琐，这时候expect就派上用场了</p>
+<p><img src="https://img11.360buyimg.com/opr/jfs/t1/97795/18/14901/175820/5e6b2fd9E9b02195e/db1d64d12dcad3e9.png"></p>
+<h3 id="expect是什么"><a href="#expect是什么" class="headerlink" title="expect是什么"></a>expect是什么</h3><p>expect就是一个能帮我们自动化执行交互式脚本的命令行工具</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>mac <code>brew install expect</code></p>
+<p>linux <code>yum install expect</code></p>
+<h3 id="expect-常用命令"><a href="#expect-常用命令" class="headerlink" title="expect 常用命令"></a>expect 常用命令</h3><p> <code>spawn</code>  接收命令  如ssh 192.168.100.100</p>
+<p> <code>expect</code> 等待接收上面命令执行完的字符串，执行下一步操作</p>
+<p> <code>send</code> 发送你要输入的内容</p>
+<p><code>interact</code> 退出自动执行 返回人工交互</p>
+<h3 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h3><p>下面来实现如何自动登录</p>
+<p>先创建一个文件<code>login_server.sh</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#! /usr/bin/expect</span><br><span class="line"></span><br><span class="line">#定义一些变量</span><br><span class="line">set timeout 30 #超时时间，随便写一个吧</span><br><span class="line">set username hello</span><br><span class="line">set password 123456  #密码123456</span><br><span class="line"></span><br><span class="line"># 登录跳板机</span><br><span class="line">spawn ssh $username@192.168.000.00</span><br><span class="line">#expect 根据上面命令执行后返回的信息，如果包含password，就证明成功,执行下一步，</span><br><span class="line">#所以需要根据自己返回的信息确定成功后每次都包含哪些字符串</span><br><span class="line">expect &quot;password&quot; </span><br><span class="line"># 发送密码</span><br><span class="line">send &quot;$password\r&quot;</span><br><span class="line"># 返回的信息包含&quot;@&quot;成功</span><br><span class="line">expect &quot;@&quot; </span><br><span class="line"></span><br><span class="line"># 下面就基本重复上面的步骤</span><br><span class="line"></span><br><span class="line"># 堡垒机</span><br><span class="line">send &quot;ssh 10.123.456.789\r&quot;</span><br><span class="line">expect &quot;*password:&quot;</span><br><span class="line">send &quot;$password\r&quot;</span><br><span class="line"></span><br><span class="line"># idc</span><br><span class="line">expect &quot;*IP:&quot;</span><br><span class="line">send &quot;10.123.45.67\r&quot;</span><br><span class="line">expect &quot;*user:&quot;</span><br><span class="line">send &quot;$username\r&quot;</span><br><span class="line">expect &quot;Password:&quot;</span><br><span class="line">send &quot;$password\r&quot;</span><br><span class="line"></span><br><span class="line"># 最后退出返回人工操作</span><br><span class="line">interact</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后命令行 <code>./login_server.sh</code> 等执行完就ok了</p>
+
+    <hr>
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"></div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </a>
+        <!-- © eijil 2015-2021 -->
+    </div>
+    <!-- <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://frankenstein-ashen.now.sh/">
+            Guestbook
+        </a>
+    </div> -->
+</div>
+</div>
+</footer>
+  <script src="/js/zoom-image.js"></script>
+<script type="text/javascript">
+var imgArr = document.getElementsByTagName('img')
+for (var i = 0; i < imgArr.length; i += 1) {
+  zoom(imgArr[i])
+}
+
+// dropdown scripts
+function $(s) { return document.querySelector(s)}
+function $$(s) { return document.querySelectorAll(s) }
+var dropDownElArr = $$('.dropdown')
+for (var i = 0; i < dropDownElArr.length; i += 1) {
+  dropDownElArr[i].addEventListener('click', function(event) {
+  var content = this.querySelector('.dropdown-content')
+  event.stopPropagation()
+  if (content.className.indexOf('open') < 0) {
+    content.classList.add('open')
+  } else {
+    content.classList.remove('open')
+  }
+})
+}
+document.body.addEventListener('click', function() {
+  var dropDownContentElArr = $$('.dropdown-content')
+  for (var i = 0; i < dropDownContentElArr.length; i += 1) {
+    dropDownContentElArr[i].classList.remove('open')
+  }
+})
+</script>
+
+</body>
+</html>
