@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="referrer" content="unsafe-url">
+
+  
+  <title>使用GPU.js提升Javascript性能</title>
+  <meta name="author" content="JIEL">
+  <meta name="description" content="hello world">
+  
+  
+  <meta property="og:title" content="使用GPU.js提升Javascript性能"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/disqusjs.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- 
+      <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/styles/default.min.css">
+      
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> -->
+
+  
+
+
+  <script src="/js/disqus.js"></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  </a>
+  <div class="description">
+    &nbsp;hello world
+  </div>
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title">
+        使用GPU.js提升Javascript性能
+    </h1>
+  
+
+
+    </div>
+    <div class="page-meta center">
+      <time datetime="2025-03-22T11:30:55.787Z" itemprop="datePublished">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    2025-03-22
+</time>
+
+
+
+
+
+
+<div class="reading">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    <span id="busuanzi_value_page_pv">…</span>
+</div>
+
+    </div>
+    <hr>
+    
+    <div class="picture-container">
+      
+    </div>
+    <p>我们都知道Javascript是一种单线程的语言，当我们需要执行大量复杂计算时，单线程性能就显得捉襟见肘，当然Javascript也有web worker支持开启多线程，但这也是使用了CPU的性能还需要自己处理并行逻辑，显得有些麻烦。除了CPU浏览器也可以使用GPU来处理程序，我们熟悉的WebGL就是使用的GPU来计算的，但这需要开发人员熟悉WebGL语言，如果没有WebGL的开发基础，那么你可以尝试了解下GPU.js。</p>
+<h2 id="什么是GPU-js"><a href="#什么是GPU-js" class="headerlink" title="什么是GPU.js"></a>什么是GPU.js</h2><p><a target="_blank" rel="noopener" href="https://gpu.rocks/#/">GPU.js</a>是一个JavaScript加速库，支持web或node中的javasctip使用GPGPU（GPU通用计算）。 GPU.js会自动将简单的JavaScript函数转换为着色器语言，并对其进行编译，使其能在您的GPU上运行，还有一个备用选项：在系统上没有 GPU 的情况下，这些功能仍将在常规 JavaScript引擎上运行。</p>
+<h4 id="性能提升多少？"><a href="#性能提升多少？" class="headerlink" title="性能提升多少？"></a>性能提升多少？</h4><p>由于GPU本身非常擅长的是大规模并发计算，根据机器配置不同，计算速度能提高1-15倍，本文我会使用两个示例来对CPU版本和GPU版本的性能进行对比</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><code>Javascript</code>的库，都懂的。。。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">## install</span><br><span class="line">npm install gpu.<span class="property">js</span> --save</span><br><span class="line"></span><br><span class="line"><span class="comment">//Node</span></span><br><span class="line"><span class="keyword">const</span> &#123; <span class="variable constant_">GPU</span> &#125; = <span class="built_in">require</span>(<span class="string">&#x27;gpu.js&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> gpu = <span class="keyword">new</span> <span class="title function_">GPU</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Typescript</span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="variable constant_">GPU</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;gpu.js&#x27;</span></span><br><span class="line"><span class="keyword">const</span> gpu = <span class="keyword">new</span> <span class="title function_">GPU</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">//浏览器</span></span><br><span class="line">&lt;script src=<span class="string">&quot;dist/gpu-browser.min.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">    <span class="keyword">const</span> gpu = <span class="keyword">new</span> <span class="title function_">GPU</span>();</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>先引用官方的示例，运行两个<code>512 x 512</code>的<a target="_blank" rel="noopener" href="https://mathsisfun.com/algebra/matrix-multiplying.html">矩阵乘法</a>算法，我们先实现一个未使用gpu的原生javascript实现的矩阵相乘，在对比使用GPU实现的区别，最后测试两个在本地执行的性能</p>
+<h3 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h3><p>先创建两个512x512的矩阵用作测试数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//初始化矩阵</span><br><span class="line">const generateMatrices = () =&gt; &#123;</span><br><span class="line">    const matrices = [[],[]]</span><br><span class="line">    for (let y = 0; y &lt; 512; y++) &#123;</span><br><span class="line">        matrices[0].push([])</span><br><span class="line">        matrices[1].push([])</span><br><span class="line">        for (let x = 0; x &lt; 512; x++) &#123;</span><br><span class="line">            matrices[0][y].push(Math.random())</span><br><span class="line">            matrices[1][y].push(Math.random())</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return matrices</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="javascript"><a href="#javascript" class="headerlink" title="javascript:"></a>javascript:</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">CPUmultiplyMatrix</span>(<span class="params">a, b</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> width = a.<span class="property">length</span>;</span><br><span class="line">  <span class="keyword">const</span> height = b.<span class="property">length</span>;</span><br><span class="line">  <span class="keyword">const</span> result = <span class="keyword">new</span> <span class="title class_">Array</span>(height);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> y = <span class="number">0</span>; y &lt; height; y++) &#123;</span><br><span class="line">    <span class="keyword">const</span> row = <span class="keyword">new</span> <span class="title class_">Array</span>(width);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> x = <span class="number">0</span>; x &lt; width; x++) &#123;</span><br><span class="line">      <span class="keyword">let</span> sum = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; width; i++) &#123;</span><br><span class="line">        sum += a[y][i] * b[i][x];</span><br><span class="line">      &#125;</span><br><span class="line">      row[x] = sum;</span><br><span class="line">    &#125;</span><br><span class="line">    result[y] = row;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//生成矩阵</span></span><br><span class="line"><span class="keyword">const</span> matrices = <span class="title function_">generateMatrices</span>()</span><br><span class="line"><span class="comment">//将矩阵作为参数调用</span></span><br><span class="line"><span class="title class_">CPUmultiplyMatrix</span>(matrices[<span class="number">0</span>], matrices[<span class="number">1</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="gpu-js："><a href="#gpu-js：" class="headerlink" title="gpu.js："></a>gpu.js：</h3><p>通过<code>gpu.createKerner</code>函数将javascript代码转成GPU可执行的代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">const GPUmultiplyMatrix = gpu.createKernel(function (a, b) &#123;</span><br><span class="line">    let sum = 0;</span><br><span class="line">    for (let i = 0; i &lt; 512; i++) &#123;</span><br><span class="line">        sum += a[this.thread.y][i] * b[i][this.thread.x];</span><br><span class="line">    &#125;</span><br><span class="line">    return sum;</span><br><span class="line">&#125;).setOutput([512, 512])</span><br><span class="line"></span><br><span class="line">//生成矩阵</span><br><span class="line">const matrices = generateMatrices()</span><br><span class="line">//将矩阵作为参数调用</span><br><span class="line">GPUmultiplyMatrix(matrices[0], matrices[1])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>对比两个函数的话我们能发现在Javacript版本中是多写了两层循环的，其功能可以等同于GPU.js中的<code>setOutPut([512, 512])</code>,而<code>this.thread.y</code>和<code>this.thread.x</code>也相当于循环中的<code>x</code>和<code>y</code>,可以这样理解，GPU.js主要帮我们控制了循环部分，在内部应该是转化成多个线程来同时并发处理我们的程序。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> y = <span class="number">0</span>; y &lt; <span class="number">512</span>; y++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> x = <span class="number">0</span>; x &lt; <span class="number">512</span>; x++) &#123;</span><br><span class="line">         <span class="comment">//this.thread.y == y</span></span><br><span class="line">         <span class="comment">//this.thread.x == x</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//等价于</span></span><br><span class="line"><span class="title function_">setOutPut</span>([<span class="number">512</span>,<span class="number">512</span>]]</span><br></pre></td></tr></table></figure>
+<p><code>setOutput </code>最多可以支持三维，在循环中通过<code>this.thread.x</code>，<code>this.thread.y</code>和<code>this.thread.z</code>来取值，例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const kernel = gpu.createKernel(function() &#123;</span><br><span class="line">    return this.thread.x;</span><br><span class="line">&#125;).setOutput([10]);</span><br><span class="line">kernel()</span><br><span class="line">//result [0,1,2,3,....9]</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h3 id="性能对比"><a href="#性能对比" class="headerlink" title="性能对比"></a>性能对比</h3><p>接下来本地跑一下两个函数，看看性能有什么差别，我们使用<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/benchmark">benchmark.js</a>来进行测试</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Benchmark</span> = <span class="built_in">require</span>(<span class="string">&#x27;benchmark&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> suite = <span class="keyword">new</span> <span class="title class_">Benchmark</span>.<span class="property">Suite</span>;</span><br><span class="line"></span><br><span class="line">suite</span><br><span class="line">      .<span class="title function_">add</span>(<span class="string">&quot;CPU&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="title class_">CPUmultiplyMatrix</span>(matrices[<span class="number">0</span>], matrices[<span class="number">1</span>]);</span><br><span class="line">      &#125;)</span><br><span class="line">      .<span class="title function_">add</span>(<span class="string">&quot;GPU&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="title class_">GPUmultiplyMatrix</span>(matrices[<span class="number">0</span>], matrices[<span class="number">1</span>]);</span><br><span class="line">      &#125;)</span><br><span class="line">      <span class="comment">// add listeners</span></span><br><span class="line">      .<span class="title function_">on</span>(<span class="string">&quot;cycle&quot;</span>, <span class="keyword">function</span> (<span class="params">event</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">String</span>(event.<span class="property">target</span>));</span><br><span class="line">      &#125;)</span><br><span class="line">      .<span class="title function_">on</span>(<span class="string">&quot;complete&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Fastest is &quot;</span> + <span class="variable language_">this</span>.<span class="title function_">filter</span>(<span class="string">&quot;fastest&quot;</span>).<span class="title function_">map</span>(<span class="string">&quot;name&quot;</span>));</span><br><span class="line">      &#125;)</span><br><span class="line">      .<span class="title function_">run</span>(&#123; <span class="attr">async</span>: <span class="literal">true</span> &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// logs </span></span><br><span class="line"><span class="comment">//  =&gt; CPU x 2.60 ops/sec ±6.71% (11 runs sampled)</span></span><br><span class="line"><span class="comment">//  =&gt; GPU x 52.48 ops/sec ±1.49% (56 runs sampled)</span></span><br><span class="line"><span class="comment">//  =&gt; Fastest is GPU</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>看下上面的<code>logs</code>，<code>ops/sec</code> 表示代码执行次数每秒，这个值越大越好，可以看到在我本地机器GPU的执行速度是CPU的*<code>20</code>*倍，速度提升还是很明显的(测试是在nodejs环境中执行)</p>
+<h2 id="图像处理"><a href="#图像处理" class="headerlink" title="图像处理"></a>图像处理</h2><p>有时我们想输出一个图片，而不是单纯的数值计算，那么我们可以设置<code>setGraphical(true)</code>，函数内部使用<code>this.color(0,0,0)</code>来设置像素点颜色。<br>下面是一个例子生成一个20x20纯黑的canvas:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> render = gpu.<span class="title function_">createKernel</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">color</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">&#125;)</span><br><span class="line">  .<span class="title function_">setOutput</span>([<span class="number">20</span>, <span class="number">20</span>])</span><br><span class="line">  .<span class="title function_">setGraphical</span>(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="title function_">render</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> canvas = render.<span class="property">canvas</span>;</span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;body&#x27;</span>)[<span class="number">0</span>].<span class="title function_">appendChild</span>(canvas);</span><br></pre></td></tr></table></figure>
+
+<h3 id="卷积计算"><a href="#卷积计算" class="headerlink" title="卷积计算"></a>卷积计算</h3><p>第一个例子是一个纯计算的我们只是在控制台查看数据表现，下面来尝试一个稍微复杂点的图片处理，并对比下在Web上速度有没有明显的提升，实现一个图片的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kernel_(image_processing)#Convolution">卷积计算(Convolution)</a>，使用3x3大小<a href="(https://en.wikipedia.org/wiki/Kernel_(image_processing)#Normalization)">卷积核((Kernel)</a>。</p>
+<p>先简短介绍下什么是卷积计算，可以使用一张动图来说明就比较简单，当卷积核在图像上扫过一遍为一次卷积计算</p>
+<p><img src="https://img12.360buyimg.com/imagetools/jfs/t1/150538/19/11214/65213/5fdc442dEd6cf7b94/1e0cadc514a679db.gif"></p>
+<p>每次的计算算法展开如下：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/35c4172c20fc4aedbad04b3578ada98d~tplv-k3u1fbpfcp-zoom-1.image"></p>
+<p>下图是些常用的图片处理的<code>kernel</code>，右边是卷积后的效果：</p>
+<p><img src="https://img14.360buyimg.com/imagetools/jfs/t1/136632/3/18889/186933/5fcdfa10E5afbf23f/a235337ad6dd9a5a.png"></p>
+<p>我们就拿Edge detecition中一个来测试下效果：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//边缘检测</span></span><br><span class="line"><span class="keyword">const</span> edge = [</span><br><span class="line">  [-<span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>],</span><br><span class="line">  [-<span class="number">1</span>,  <span class="number">8</span>, -<span class="number">1</span>],</span><br><span class="line">  [-<span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>]</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><p><code>gpu.js</code> convolution实现</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//边缘检测</span></span><br><span class="line"><span class="keyword">const</span> edge = [</span><br><span class="line">  [-<span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>],</span><br><span class="line">  [-<span class="number">1</span>,  <span class="number">8</span>, -<span class="number">1</span>],</span><br><span class="line">  [-<span class="number">1</span>, -<span class="number">1</span>, -<span class="number">1</span>]</span><br><span class="line">];</span><br><span class="line"><span class="comment">//gpujs版本convolution</span></span><br><span class="line"><span class="keyword">const</span> convolution = <span class="keyword">function</span> (<span class="params">image, width, height, kernel, container</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> render = gpu</span><br><span class="line">    .<span class="title function_">createKernel</span>(<span class="keyword">function</span> (<span class="params">image, kernel</span>) &#123;</span><br><span class="line">      <span class="keyword">let</span> r = <span class="number">0</span>,</span><br><span class="line">          g = <span class="number">0</span>,</span><br><span class="line">          b = <span class="number">0</span>;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++) &#123;</span><br><span class="line">              <span class="keyword">const</span> pixel = image[<span class="variable language_">this</span>.<span class="property">thread</span>.<span class="property">y</span> + j][<span class="variable language_">this</span>.<span class="property">thread</span>.<span class="property">x</span> + i];</span><br><span class="line">              r += pixel.<span class="property">r</span> * kernel[j][i];</span><br><span class="line">              g += pixel.<span class="property">g</span> * kernel[j][i];</span><br><span class="line">              b += pixel.<span class="property">b</span> * kernel[j][i];</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="title function_">color</span>(r, g, b);</span><br><span class="line">    &#125;)</span><br><span class="line">    .<span class="title function_">setOutput</span>([width, height])</span><br><span class="line">    .<span class="title function_">setGraphical</span>(<span class="literal">true</span>);</span><br><span class="line">  <span class="title function_">render</span>(image, kernel);</span><br><span class="line">  container.<span class="title function_">appendChild</span>(render.<span class="property">canvas</span>)</span><br><span class="line">  </span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//onload</span></span><br><span class="line"><span class="keyword">const</span> image = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;img&quot;</span>);</span><br><span class="line">image.<span class="property">crossOrigin</span> = <span class="string">&quot;anonymous&quot;</span>;</span><br><span class="line">image.<span class="property">src</span> = <span class="string">&#x27;../xxx.jpg&#x27;</span>;</span><br><span class="line">image.<span class="property">onload</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">   <span class="keyword">const</span> &#123;width,height&#125; = image</span><br><span class="line">   <span class="title function_">convolution</span>(image,width,height,dom)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>javascript版本：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 普通版本convolution</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">canvas getImageData</span>&#125; imageData </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">kernel</span>&#125; <span class="variable">kernel</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">canvas getContext</span>&#125; <span class="variable">ctx</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">const</span> normalConvolution = <span class="keyword">function</span> (<span class="params">imageData,kernel,ctx</span>)&#123;</span><br><span class="line">  </span><br><span class="line"> <span class="keyword">const</span> &#123; data,width,height&#125; = imageData</span><br><span class="line"> <span class="keyword">const</span> result = ctx.<span class="title function_">createImageData</span>(width, height);</span><br><span class="line"> <span class="keyword">const</span> outData = result.<span class="property">data</span></span><br><span class="line"> <span class="keyword">const</span> kernelSize = kernel.<span class="property">length</span></span><br><span class="line"> <span class="keyword">const</span> half = <span class="title class_">Math</span>.<span class="title function_">floor</span>(kernelSize / <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> x = <span class="number">0</span>;x &lt; width; x++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> y= <span class="number">0</span>;y &lt; height; y++)&#123;</span><br><span class="line">      <span class="keyword">const</span> px = (y * width + x) * <span class="number">4</span>; </span><br><span class="line">      <span class="keyword">let</span> r = <span class="number">0</span>,g = <span class="number">0</span>,b = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; kernelSize; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; kernelSize; j++) &#123;</span><br><span class="line">          <span class="keyword">const</span> cpx = ((y + (i - half)) * width + (x + (j - half))) * <span class="number">4</span>;</span><br><span class="line">          r += data[cpx + <span class="number">0</span>] * kernel[j][i];</span><br><span class="line">          g += data[cpx + <span class="number">1</span>] * kernel[j][i];</span><br><span class="line">          b += data[cpx + <span class="number">2</span>] * kernel[j][i];</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      outData[px + <span class="number">0</span>] = r ;</span><br><span class="line">      outData[px + <span class="number">1</span>] = g ;</span><br><span class="line">      outData[px + <span class="number">2</span>] = b ;</span><br><span class="line">      outData[px + <span class="number">3</span>] = data[px + <span class="number">3</span>];</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ctx.<span class="title function_">putImageData</span>(result,<span class="number">0</span>,<span class="number">0</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">const</span> &#123; width, height &#125; = image</span><br><span class="line"><span class="keyword">const</span> canvas = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&quot;canvas&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> context = canvas.<span class="title function_">getContext</span>(<span class="string">&#x27;2d&#x27;</span>);</span><br><span class="line">canvas.<span class="property">width</span> = width</span><br><span class="line">canvas.<span class="property">height</span> = height</span><br><span class="line">context.<span class="title function_">drawImage</span>(image, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line"><span class="keyword">const</span> imageData = context.<span class="title function_">getImageData</span>(<span class="number">0</span>, <span class="number">0</span>, width, height)</span><br><span class="line"><span class="title function_">normalConvolution</span>(imageData, edge, context)</span><br><span class="line">dom.<span class="title function_">appendChild</span>(canvas) </span><br></pre></td></tr></table></figure>
+
+<h3 id="执行效果对比"><a href="#执行效果对比" class="headerlink" title="执行效果对比"></a>执行效果对比</h3><p>以下是使用一张<code>7680x4320</code>大小的图片，我们看下对比效果</p>
+<h3 id="gpu："><a href="#gpu：" class="headerlink" title="gpu："></a>gpu：</h3><p><img src="https://img13.360buyimg.com/imagetools/jfs/t1/130398/33/20108/3094100/5fd7226bEe3856dcd/68f746f318f8fb46.gif"></p>
+<h3 id="cpu："><a href="#cpu：" class="headerlink" title="cpu："></a>cpu：</h3><p><img src="https://img13.360buyimg.com/imagetools/jfs/t1/132526/2/20394/3329032/5fdc61eaE615731b0/30dcf4f4323f113e.gif"></p>
+<p>可以明显看到gpu版本是会比cpu版的执行速度是有很大的提升</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文主要简单介绍GPU.js的使用方法和通过具体例子比较了cpu和gpu的性能对比，如果你的项目中有一些需要大量计算的程序，或许可以尝试使用，关于gpu.js更详细的使用还需要自行到官网了解，文章中涉及的代码已上传到<a target="_blank" rel="noopener" href="https://github.com/eijil/convolution_demo_width_gpujs/blob/master/convolution/src/App.js">github</a>，感兴趣可自行查看。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://github.com/gpujs">https://github.com/gpujs</a></p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kernel_(image_processing)">https://en.wikipedia.org/wiki/Kernel_(image_processing)</a></p>
+
+    <hr>
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"></div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </a>
+        <!-- © eijil 2015-2021 -->
+    </div>
+    <!-- <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://frankenstein-ashen.now.sh/">
+            Guestbook
+        </a>
+    </div> -->
+</div>
+</div>
+</footer>
+  <script src="/js/zoom-image.js"></script>
+<script type="text/javascript">
+var imgArr = document.getElementsByTagName('img')
+for (var i = 0; i < imgArr.length; i += 1) {
+  zoom(imgArr[i])
+}
+
+// dropdown scripts
+function $(s) { return document.querySelector(s)}
+function $$(s) { return document.querySelectorAll(s) }
+var dropDownElArr = $$('.dropdown')
+for (var i = 0; i < dropDownElArr.length; i += 1) {
+  dropDownElArr[i].addEventListener('click', function(event) {
+  var content = this.querySelector('.dropdown-content')
+  event.stopPropagation()
+  if (content.className.indexOf('open') < 0) {
+    content.classList.add('open')
+  } else {
+    content.classList.remove('open')
+  }
+})
+}
+document.body.addEventListener('click', function() {
+  var dropDownContentElArr = $$('.dropdown-content')
+  for (var i = 0; i < dropDownContentElArr.length; i += 1) {
+    dropDownContentElArr[i].classList.remove('open')
+  }
+})
+</script>
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="referrer" content="unsafe-url">
+
+  
+  <title>规范GIT代码提交信息&amp;自动化版本管理</title>
+  <meta name="author" content="JIEL">
+  <meta name="description" content="hello world">
+  
+  
+  <meta property="og:title" content="规范GIT代码提交信息&amp;自动化版本管理"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/disqusjs.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- 
+      <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/styles/default.min.css">
+      
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> -->
+
+  
+
+
+  <script src="/js/disqus.js"></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  </a>
+  <div class="description">
+    &nbsp;hello world
+  </div>
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title">
+        规范GIT代码提交信息&amp;自动化版本管理
+    </h1>
+  
+
+
+    </div>
+    <div class="page-meta center">
+      <time datetime="2025-03-22T11:30:55.786Z" itemprop="datePublished">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    2025-03-22
+</time>
+
+
+
+
+
+
+<div class="reading">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    <span id="busuanzi_value_page_pv">…</span>
+</div>
+
+    </div>
+    <hr>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>git</code>作为一个开发人员必不可少的工具，代码提交也是日常一个非常频繁的操作，如果你或你的团队目前对提交信息还没有一个规范或约束，那么你有必要看看本文的内容了。</p>
+<h2 id="为什么要规范提交信息"><a href="#为什么要规范提交信息" class="headerlink" title="为什么要规范提交信息"></a>为什么要规范提交信息</h2><p>首先规范提交信息肯定是有必要的，简单总结下几点好处：</p>
+<ul>
+<li>让项目的维护或使用人员能了解提交了哪些更改</li>
+<li>清晰的历史记录，可能某天自己就需要查到呢</li>
+<li>规范的提交记录可用于自动生成修改日志(CHANGELOG.MD)</li>
+<li>基于提交类型，触发构建和部署流程</li>
+</ul>
+<h2 id="使用什么规范"><a href="#使用什么规范" class="headerlink" title="使用什么规范"></a>使用什么规范</h2><p><strong><code>Conventional Commits</code>(约定式提交规范)</strong> ，是目前使用最广泛的提交信息规范，其主要受<a target="_blank" rel="noopener" href="https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines">AngularJS规范</a>的启发,下面是一个规范信息的结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;[optional scope]: &lt;subject&gt;</span><br><span class="line">//空一行</span><br><span class="line">[optional body]</span><br><span class="line">//空一行</span><br><span class="line">[optional footer(s)]</span><br></pre></td></tr></table></figure>
+<h3 id="规范说明"><a href="#规范说明" class="headerlink" title="规范说明"></a>规范说明</h3><p><strong><code>type</code></strong> 提交的类别，必须是以下类型中的一个</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">feat：增加一个新功能</span><br><span class="line">fix：修复bug</span><br><span class="line">docs：只修改了文档</span><br><span class="line">style：做了不影响代码含义的修改，空格、格式化、缺少分号等等</span><br><span class="line">refactor：代码重构，既不是修复bug，也不是新功能的修改</span><br><span class="line">perf：改进性能的代码</span><br><span class="line">test：增加测试或更新已有的测试</span><br><span class="line">chore：构建或辅助工具或依赖库的更新</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong><code>scope</code></strong> 可选，表示影响的范围、功能、模块</p>
+<p><strong><code>subject</code></strong><br>必填，简单说明，不超过50个字</p>
+<p><strong><code>body</code></strong><br>选填，用于填写更详细的描述</p>
+<p><strong><code>footer</code></strong><br>选填，用于填关联<code>issus</code>,或<code>BREAK CHANGE</code></p>
+<p><strong><code>BREAKING CHANGE</code></strong></p>
+<p>必须是大写，表示引入了破坏性 API 变更，通常是一个大版本的改动，<code>BREAKING CHANGE:</code> 之后必须提供描述，下面一个包含破坏性变更的提交示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">feat: allow provided config object to extend other configs</span><br><span class="line"></span><br><span class="line">BREAKING CHANGE: `extends` key in config file is now used for extending other config files</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>更详细的说明请看<a target="_blank" rel="noopener" href="https://www.conventionalcommits.org/zh-hans/v1.0.0-beta.4/#%e7%ba%a6%e5%ae%9a%e5%bc%8f%e6%8f%90%e4%ba%a4%e8%a7%84%e8%8c%83">约定式提交规范</a></p>
+</blockquote>
+<h3 id="如何约束规范"><a href="#如何约束规范" class="headerlink" title="如何约束规范"></a>如何约束规范</h3><p>怎么确保每个提交都能符合规范呢，最好的方式就是通过工具来生成和校验，<code>commitizen</code>是一个nodejs命令行工具，通过交互的方式，生成符合规范的git commit，界面如下：</p>
+<p><img src="https://github.com/commitizen/cz-cli/raw/master/meta/screenshots/add-commit.png"></p>
+<p>开始安装:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 全局安装</span><br><span class="line">npm install -g commitizen </span><br><span class="line"># 或者本地安装</span><br><span class="line">$ npm install --save-dev commitizen</span><br><span class="line"># 安装适配器</span><br><span class="line">npm install cz-conventional-changelog</span><br></pre></td></tr></table></figure>
+<p><code>packages.json</code>在配置文件中指定使用哪种规范</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  <span class="string">&quot;config&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;commitizen&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;path&quot;</span>: <span class="string">&quot;cz-conventional-changelog&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>安装完成后可以使用<code>git cz</code> 来代替<code>git commit</code>,然后根据提示一步步输入即可</p>
+<h3 id="格式校验commitlint"><a href="#格式校验commitlint" class="headerlink" title="格式校验commitlint"></a>格式校验commitlint</h3><p>可能你不想每次都通过交互界面来生成，还是想使用<code>git commit -m &#39;message&#39;</code>，那么为了确保信息的正确性，可以结合<code>husky</code>对提交的信息进行格式验证</p>
+<p>安装依赖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @commitlint/&#123;config-conventional,cli&#125;</span><br><span class="line"><span class="comment"># 安装husky</span></span><br><span class="line">npm install --save-dev husky</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>添加 <code>commitlint.config.js</code>文件到项目</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;module.exports = &#123;extends: [&#x27;@commitlint/config-conventional&#x27;]&#125;&quot;</span> &gt; commitlint.config.js</span><br></pre></td></tr></table></figure>
+
+<p><code>package.json</code>配置</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;husky&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;hooks&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;commit-msg&quot;</span>: <span class="string">&quot;commitlint -E HUSKY_GIT_PARAMS&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>OK到这一步就完成了，最后给你项目README.MD加上一个<code>commitizen-friendly</code>的标识吧</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="http://commitizen.github.io/cz-cli/"><img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="Commitizen friendly"></a></p>
+<h2 id="自动版本管理和生成CHANGELOG"><a href="#自动版本管理和生成CHANGELOG" class="headerlink" title="自动版本管理和生成CHANGELOG"></a>自动版本管理和生成CHANGELOG</h2><p>规范化的提交信息除了能很好描述项目的修改，还有一个很好的作用就是能根据提交记录来生成CHANGELOG.MD和自动生成版本号等功能。</p>
+<h3 id="standard-version"><a href="#standard-version" class="headerlink" title="standard-version"></a>standard-version</h3><p>一个用于生成<code>CHANGELOG.md</code>和进行<code>SemVer(语义化版本号)</code>发版的命令行工具</p>
+<p>主要功能：</p>
+<ul>
+<li>自动修改最新版本号，可以是<code>package.json</code>或者自定义一个文件</li>
+<li>读取最新版本号，创建一个最新的<code>git tag</code></li>
+<li>根据提交信息，生成<code>CHANGELOG.md</code></li>
+<li>创建一个新提交包括 <code>CHANGELOG.md</code>和<code>package.json</code></li>
+</ul>
+<h3 id="语义化版本控制-SemVer"><a href="#语义化版本控制-SemVer" class="headerlink" title="语义化版本控制(SemVer)"></a>语义化版本控制(SemVer)</h3><p>先简单了解下什么是语义化的版本控制，其是由<code>GitHub</code>发起的一份用于规范版本号递增的规则，</p>
+<h5 id="版本格式"><a href="#版本格式" class="headerlink" title="版本格式"></a>版本格式</h5><p>主版本号.次版本号.修订号，版本号递增规则如下：</p>
+<ul>
+<li>主版本号(major)：当你做了不兼容的 API 修改，</li>
+<li>次版本号(minor)：当你做了向下兼容的功能性新增，可以理解为Feature版本，</li>
+<li>修订号(patch)：当你做了向下兼容的问题修正，可以理解为Bug fix版本。</li>
+</ul>
+<p>先行版本号可以加到“主版本号.次版本号.修订号”的后面，作为延伸。</p>
+<h5 id="先行版本"><a href="#先行版本" class="headerlink" title="先行版本"></a>先行版本</h5><p>当即将发布大版本改动前，但是又不能保证这个版本的功能 100% 正常，这个时候可以发布先行版本：</p>
+<ul>
+<li>alpha: 内部版本</li>
+<li>beta: 公测版本</li>
+<li>rc: 候选版本(Release candiate)</li>
+</ul>
+<p>比如：1.0.0-alpha.0,1.0.0-alpha.1,1.0.0-rc.0,1.0.0-rc.1等。</p>
+<p> <code>standard-version</code> 会根据提交的信息类型来自动更改对应的版本号,如下:</p>
+<ul>
+<li>feat: 次版本(minor)+1</li>
+<li>fix: 修订号(patch) +1</li>
+<li>BREAK CHANGE: 主板号(marjor) +1</li>
+</ul>
+<blockquote>
+<p><code>standard-verstion</code> 生成的<code>CHANGELOG</code>只会包含<code>feat</code>,<code>fix</code>,<code>BREACK-CHANGE</code>类型的提交记录</p>
+</blockquote>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i --save-dev standard-version</span><br></pre></td></tr></table></figure>
+
+<p>添加<code>npm script</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"> scripts:&#123;</span><br><span class="line">   &quot;release&quot;: &quot;standard-version&quot;,</span><br><span class="line">   &quot;release:alpha&quot;: &quot;standard-version --prerelease alpha&quot;,</span><br><span class="line">   &quot;release:rc&quot;: &quot;standard-version --prerelease rc&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># npm run script</span></span><br><span class="line">npm run release</span><br><span class="line"><span class="comment"># or global bin</span></span><br><span class="line">standard-version</span><br></pre></td></tr></table></figure>
+<p>或者你想指定发行版本号：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#指定类型 patch/minor/marjor</span></span><br><span class="line">npm run release -- --release-as patch</span><br><span class="line"><span class="comment">#指定版本号</span></span><br><span class="line">npm run release -- -- release-as 1.1.0</span><br></pre></td></tr></table></figure>
+
+<h5 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h5><ul>
+<li><code>prerelease</code>:所有脚本执行之前</li>
+<li><code>prebump</code>/<code>postbump</code>: 修改版本号之前和之后</li>
+<li><code>prechangelog</code>/<code>postchangelog</code>:生成changelog和生成changelog之后</li>
+<li><code>pretag</code>/<code>postag</code>:生成tag标签和之后</li>
+</ul>
+<p><code>standard-version</code>本身只针对本地，并没有<code>push</code>才操作，我们可以在最后一步生成tag后，执行push操作，在<code>paceage.json</code>中添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&quot;standard-version&quot;: &#123;</span><br><span class="line">    &quot;scripts&quot;: &#123;</span><br><span class="line">      &quot;posttag&quot;: &quot;git push --follow-tags origin master &amp;&amp; npm publish&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>还有更多配置功能自行查阅 <a target="_blank" rel="noopener" href="https://github.com/conventional-changelog/standard-version">官方文档</a></p>
+<h4 id="其它类似工具"><a href="#其它类似工具" class="headerlink" title="其它类似工具"></a>其它类似工具</h4><p>除了<code>standard-version</code>,还有其它类似的工具,有兴趣可以去了解下</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/semantic-release/semantic-release">semantic-release</a></li>
+<li><a target="_blank" rel="noopener" href="https://lerna.js.org/">lerna</a></li>
+</ul>
+<h2 id="修改Git-Commit"><a href="#修改Git-Commit" class="headerlink" title="修改Git Commit"></a>修改Git Commit</h2><p>为了使<code>CHANGELOG.MD</code>更能加直观看到每个版本的修改，我们尽量保证每次提交都是有意义的，但实际开发过程中，不可避免会提交了一些错误的commit message，下面介绍几个<code>git</code>命令来修改<code>commit</code></p>
+<h3 id="1-修改最后一次提交"><a href="#1-修改最后一次提交" class="headerlink" title="1 修改最后一次提交"></a>1 修改最后一次提交</h3><p><code>git commit --amend</code></p>
+<p>该命令会创建一个提交并覆盖上次提交，如果是因为写错或者不满意上次的提交信息，使用该命令就非常适合。</p>
+<h3 id="2-合并多条提交"><a href="#2-合并多条提交" class="headerlink" title="2 合并多条提交"></a>2 合并多条提交</h3><p><code>git reset --soft [commitID]</code></p>
+<p>如果你想合并最近几条提交信息的话，那么就需要使用上面的命令来操作，指定要撤销的ccommitId,该命令会保留当前改动并撤销指定提交后的所有commit记录，如果不指定ID的话可以使用HEAD~`{num}<code> 来选择最近</code>{num}`条提交</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git reset --soft HEAD~2 #合并最近两条提交</span><br><span class="line">git commit -m &#x27;feat: add new feat&#x27;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>带 <code>--soft</code> 参数的区别在于把改动内容添加到暂存区 相当于执行了<code>git add .</code></p>
+</blockquote>
+<h3 id="git-rebase-i"><a href="#git-rebase-i" class="headerlink" title="git rebase -i"></a>git rebase -i</h3><p><code>git rebase</code>的功能会更加强大，如果我想修改最近3条提交记录，执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git rebase -i  HEAD~3</span><br></pre></td></tr></table></figure>
+<p>会出现如下编辑器界面(vim编辑器):</p>
+<p><img src="https://img14.360buyimg.com/imagetools/jfs/t1/146374/23/7928/299480/5f5994e4E612057a2/96c528644441ab76.png"></p>
+<p>上面显示的是我最近3条提交信息 ，下面是命令说明，<br>修改方式就是将commit信息前的<code>pick</code>改为你需要的命令，然后退出<code>:wq</code>保存</p>
+<p>下面是常用的命令说明：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">p,pick = 使用提交</span><br><span class="line">r,reword = 使用提交，但修改提交说明</span><br><span class="line">e,edit = 使用提交，退出后使用git commit --amend 修改</span><br><span class="line">s,squash = 使用提交，合并前一个提交</span><br><span class="line">f,fixup = 和squash相同，但丢弃提交说明日志</span><br><span class="line">d,drop = 删除提交，丢弃提交记录</span><br></pre></td></tr></table></figure>
+
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>文本主要介绍了如何规范<code>git commit</code>和自动语义化版本管理，以及如何修改<code>git commit</code>,遵循一个规范其实没比之前随意填写信息增加多少工作量，但依赖规范却可以实现更多提升效率的事情。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.conventionalcommits.org/zh-hans/v1.0.0-beta.4">conventional commits</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/conventional-changelog/standard-version">standard version</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://semver.org/lang/zh-CN/">semver.org</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://juejin.im/post/6844903591690534926">Semver(语义化版本号)扫盲</a></p>
+</li>
+</ul>
+
+    <hr>
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"></div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </a>
+        <!-- © eijil 2015-2021 -->
+    </div>
+    <!-- <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://frankenstein-ashen.now.sh/">
+            Guestbook
+        </a>
+    </div> -->
+</div>
+</div>
+</footer>
+  <script src="/js/zoom-image.js"></script>
+<script type="text/javascript">
+var imgArr = document.getElementsByTagName('img')
+for (var i = 0; i < imgArr.length; i += 1) {
+  zoom(imgArr[i])
+}
+
+// dropdown scripts
+function $(s) { return document.querySelector(s)}
+function $$(s) { return document.querySelectorAll(s) }
+var dropDownElArr = $$('.dropdown')
+for (var i = 0; i < dropDownElArr.length; i += 1) {
+  dropDownElArr[i].addEventListener('click', function(event) {
+  var content = this.querySelector('.dropdown-content')
+  event.stopPropagation()
+  if (content.className.indexOf('open') < 0) {
+    content.classList.add('open')
+  } else {
+    content.classList.remove('open')
+  }
+})
+}
+document.body.addEventListener('click', function() {
+  var dropDownContentElArr = $$('.dropdown-content')
+  for (var i = 0; i < dropDownContentElArr.length; i += 1) {
+    dropDownContentElArr[i].classList.remove('open')
+  }
+})
+</script>
+
+</body>
+</html>

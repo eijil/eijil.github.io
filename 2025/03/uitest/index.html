@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="referrer" content="unsafe-url">
+
+  
+  <title>UI自动化测试实践</title>
+  <meta name="author" content="JIEL">
+  <meta name="description" content="hello world">
+  
+  
+  <meta property="og:title" content="UI自动化测试实践"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/disqusjs.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- 
+      <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/styles/default.min.css">
+      
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> -->
+
+  
+
+
+  <script src="/js/disqus.js"></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  </a>
+  <div class="description">
+    &nbsp;hello world
+  </div>
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title">
+        UI自动化测试实践
+    </h1>
+  
+
+
+    </div>
+    <div class="page-meta center">
+      <time datetime="2025-03-22T11:30:55.787Z" itemprop="datePublished">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    2025-03-22
+</time>
+
+
+
+
+
+
+<div class="reading">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    <span id="busuanzi_value_page_pv">…</span>
+</div>
+
+    </div>
+    <hr>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信大多数前端团队在工作中都思考过UI自动测试的方案（特别是发生过线上事故的时候），虽然都知道增加测试能尽量减少事故率<br>，但其实想落地并没那么容易，原因还是投入的成本通常会大于收益。那么这次我为什么要想尝试去做呢？主要还是觉得是使用场景上比较契合，这个下面展开。</p>
+<p>UI自动化测试其实主要可以分为两种，一种是通过无头浏览器比如<code>puppteer</code>或测试框架通过执行脚本来断言程序是否符合预期的，这也是最常见的；还有一种就是纯图片的对比，也是本文想讲的。</p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>是否适合使用图片对比的方式最关键还是看你的业务需求，还有一些必要的前提条件，所以以下方案其实并不通用，仅供参考。</p>
+<p>我们平时的业务需求主要是一些H5的营销活动，这类需求主要还是兼容性的测试，比如各个机型展示是否一致，不会出现空窗、价格丢失等问题，自测过程还是比较繁琐的，这些问题基本就是设计稿还原问题，那是不是跟原图对比就可以了？既然是要对比，前提就是要怎么拿到真机的图片，公司其它部门正好开发了一个自动化测试平台，可以自动去获取各个手机网页截图（如下图），所以其实我们是在这个基础上增加一个图片对比的服务。</p>
+<p><img src="https://img10.360buyimg.com/imagetools/jfs/t1/222489/9/7781/224500/61cd669cEb5d355bb/7b172984a0755a2a.png" alt="截屏2021-08-19 下午3.00.04.png"></p>
+<p>我们初步打算实现的是集成到内部正在开发的<a target="_blank" rel="noopener" href="https://jelly.jd.com/article/61a6eb9f2a070818620bac2e">DECO智能代码</a>平台，其主要功能是设计稿转换代码，为了确认UI的还原质量，所以我们加入了一个UI测试流程，在转换为代码后生成静态页面发布到线上，再获取真机截图和原设计稿进行对比，输出还原度和像素对比结果，通过这个流程我们可以提前发现大部分ui问题，也可以帮助开发人员减少自测工作量。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>总结下大概需要以下工作量：</p>
+<ol>
+<li>对接其它部门提供获取真机截图的接口</li>
+<li>如何去进行图片对比</li>
+<li>后台相关的工作量</li>
+</ol>
+<p>当然本次只介绍图片对比相关的内容</p>
+<h2 id="如何合成长图"><a href="#如何合成长图" class="headerlink" title="如何合成长图"></a>如何合成长图</h2><p>进行图片对比之前还有一个比较麻烦的问题要解决，我们能取的到的图片只是一张一张的截图，而目前的需求是需要全图去对比，所以我们还需要拼图，一开始还是从网上找有没有开源的库可以使用，js的几乎没有，ObjectC的倒还有几个，借鉴了一些思路然后自己重新实现。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>首先我们是上下图拼接，那就找出两张图重叠的部分然后进行裁剪即可，那么怎么找到重叠呢？</p>
+<h5 id="对比每一行的像素"><a href="#对比每一行的像素" class="headerlink" title="对比每一行的像素"></a>对比每一行的像素</h5><p>我们都知道每个像素点都是rgba的值组成，所以可以将图片每一行的像素相加后的值进行对比，当然单纯对比一行的数值是没意义的，但是我们只要对比多行就能确定图像是否相同了，一行相同就继续对比下一行，不同则重新对比。</p>
+<p>获取每一行像素的方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 得到每一行数据</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">toLineSumPixel</span>(<span class="params">imageData</span>) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> &#123; width, height, data &#125; = imageData</span><br><span class="line">  <span class="keyword">let</span> index = <span class="number">0</span></span><br><span class="line">  <span class="keyword">let</span> sum = <span class="number">0</span></span><br><span class="line">  <span class="keyword">const</span> lines = []</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> row = <span class="number">0</span>; row &lt; height; row++) &#123;</span><br><span class="line">    sum = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> col = <span class="number">0</span>; col &lt; width; col++) &#123;</span><br><span class="line">      sum += data[index] + data[index + <span class="number">1</span>] + data[index + <span class="number">2</span>] + data[index + <span class="number">3</span>]</span><br><span class="line">      index += <span class="number">4</span></span><br><span class="line">    &#125;</span><br><span class="line">    lines.<span class="title function_">push</span>(sum)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> lines</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="允许误差"><a href="#允许误差" class="headerlink" title="允许误差"></a>允许误差</h5><p>实际页面中可能还会存在一些干扰项，比如浮动的icon,或者某些字体有区别，导致你拼图的结果不如预期，而且实际开发过程中发现上游的截图即使相同的图片每一行像素都可能会有误差，所以我们对比每一行的时候可以允许一些误差：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//允许误差</span></span><br><span class="line"><span class="variable language_">this</span>.<span class="property">threshold</span> = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*  约等于</span></span><br><span class="line"><span class="comment"> *  @params x:上图每一行的值</span></span><br><span class="line"><span class="comment"> *  @params y:下图每一行的值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="title function_">isApproximateTo</span>(<span class="params">x, y</span>) &#123;</span><br><span class="line">   <span class="keyword">return</span> y &gt;= x * (<span class="number">1</span> - <span class="variable language_">this</span>.<span class="property">threshold</span>) &amp;&amp; y &lt;= x * (<span class="number">1</span> + <span class="variable language_">this</span>.<span class="property">threshold</span>)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>在查找过程中，初始时<code>threshold</code>可以设置为0(绝对匹配），如果对比一遍没有满足条件的会加大误差值直达满足为止。</p>
+<h5 id="找出重叠"><a href="#找出重叠" class="headerlink" title="找出重叠"></a>找出重叠</h5><p>下面是我的实现思路，为了方便阅读，代码只展示核心部分，简单讲就是两张图片每一行进行对比，时间复杂度是<code>O(m^n)</code>,通过一个二维数组记录上一次是否重叠了，最后把重叠度都大于50像素的保存起来</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">MIN_OVERLAP_HEIGHT</span> = <span class="number">50</span></span><br><span class="line"></span><br><span class="line"><span class="title function_">calcultateOverlap</span>(<span class="params">topImage,botImage</span>)&#123;</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">const</span> topLines = <span class="title function_">toLineSumPixel</span>(topImage)</span><br><span class="line">      <span class="keyword">const</span> botLines = <span class="title function_">toLineSumPixel</span>(botImage)</span><br><span class="line">      </span><br><span class="line">      <span class="comment">//初始化二维数据，记录重叠信息</span></span><br><span class="line">      <span class="keyword">const</span> matrix = [[], []]</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; botImgHeight; i++) &#123;</span><br><span class="line">        matrix[<span class="number">0</span>][i] = matrix[<span class="number">1</span>][i] = <span class="number">0</span>;</span><br><span class="line">      &#125;</span><br><span class="line">   </span><br><span class="line">      <span class="comment">//遍历两张图片每一行，得到所有重叠高度 </span></span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; topImgHeight; i++) &#123;</span><br><span class="line">          <span class="keyword">const</span> topLineValue = topLines[i]</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; botImgHeight; j++) &#123;</span><br><span class="line">            </span><br><span class="line">              <span class="keyword">const</span> botLineValue = botLines[j]</span><br><span class="line">              <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="title function_">isApproximateTo</span>(topLineValue,botLineValue))) &#123;</span><br><span class="line">                <span class="comment">//重叠高度</span></span><br><span class="line">                <span class="keyword">let</span> currentOverlapHeight = <span class="number">0</span></span><br><span class="line">                <span class="keyword">if</span> (j !== <span class="number">0</span>) &#123;</span><br><span class="line">                  <span class="keyword">const</span> preOverlapHeight = matrix[(i + <span class="number">1</span>) % <span class="number">2</span>][j - <span class="number">1</span>]</span><br><span class="line">                  currentOverlapHeight = preOverlapHeight + <span class="number">1</span></span><br><span class="line">                &#125;</span><br><span class="line">                matrix[i % <span class="number">2</span>][j] = currentOverlapHeight</span><br><span class="line">                <span class="comment">//大于指定的高度的才保存</span></span><br><span class="line">                <span class="keyword">if</span> (currentOverlapHeight &gt; <span class="variable constant_">MIN_OVERLAP_HEIGHT</span>) &#123;</span><br><span class="line">                </span><br><span class="line">                    cons info = &#123;&#125; </span><br><span class="line">                    <span class="comment">//重叠高度</span></span><br><span class="line">                    info.<span class="property">verlapHeight</span> = currentOverlapHeight</span><br><span class="line">                    <span class="comment">//上图开始重叠函数</span></span><br><span class="line">                    info.<span class="property">eginOverlapTopImage</span> = i - currentOverlapHeight + <span class="number">1</span></span><br><span class="line">                    <span class="comment">//下图开始重叠行数</span></span><br><span class="line">                    info.<span class="property">eginOverlapBotImage</span> = j - currentOverlapHeight + <span class="number">1</span></span><br><span class="line">                     </span><br><span class="line">                    <span class="variable language_">this</span>.<span class="property">list</span>.<span class="title function_">push</span>(info)</span><br><span class="line">                &#125;</span><br><span class="line">              &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                matrix[i % <span class="number">2</span>][j] = <span class="number">0</span></span><br><span class="line">              &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>后续的部分就是选出重叠度最大的进行图片的裁切和拼接，就不上代码了，具体可以<a target="_blank" rel="noopener" href="https://github.com/eijil/stitch/tree/master/src/stitch">点击这里</a>查看源码 </p>
+<h5 id="效果如何"><a href="#效果如何" class="headerlink" title="效果如何"></a>效果如何</h5><p>经过多次调试，也用了10来个页面进行测试，基本是能达到预期的，重新做了个<a href="https://eijil.github.io/stitch/">DEMO</a>，可以体验下测试下。</p>
+<h5 id="canvas库安装"><a href="#canvas库安装" class="headerlink" title="canvas库安装"></a>canvas库安装</h5><p>上面对于图片的操作都会用到一个<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/canvas">canvas</a>库，api和web的基本一致，但在服务端安装一些图片服务的库总能遇到一些问题，下面顺便记录下安装方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#环境：centos7 + nodejs </span></span><br><span class="line"><span class="comment">#先安装依赖</span></span><br><span class="line">RUN yum install -y gcc-c++ cairo-devel pango-devel libjpeg-turbo-devel giflib-devel </span><br><span class="line"></span><br><span class="line"><span class="comment">#从源码安装canvas </span></span><br><span class="line">RUN npm install canvas --build-from-source</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="图像对比"><a href="#图像对比" class="headerlink" title="图像对比"></a>图像对比</h2><p>图像对比其实没有想象中复杂，我们最终要实现的就是对图片像素的对比，并输出差异图，这可以借助<a target="_blank" rel="noopener" href="https://www.npmjs.com/package/jimp">jimp</a>的<code>diff</code>功能来实现，在之前还有一步就是要保证对比图大小是一致的，并且对比的区域是你想要的，这一步也是借助了开源库<code>opencv</code>的api <a target="_blank" rel="noopener" href="https://docs.opencv.org/4.x/d8/dd1/tutorial_js_template_matching.html">template matching</a> 来实现。</p>
+<h6 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h6><p><code>templateMatching</code> 光看英文也应该能知道是什么功能， 通过官方的例子（下图）很好理解，模板是原图中存在的部分，可以快速匹配出模板在原图中的位置</p>
+<p><img src="https://img12.360buyimg.com/imagetools/jfs/t1/176476/17/23707/637942/61cd6601Ebc2bed5a/95f3423968f805a1.png" alt="截屏2021-12-28 上午11.30.10.png"></p>
+<p>在实际例子中我们已经存在有DECO生成的静态页面，并且通过接口在真机中跑出所有截图，拿到图片后可以先裁切掉页面都头尾一些无用的信息，比如华为系统底部的虚拟导航，确保模板比原图小，通过api找到相同区域，并裁切出来, 最后使用<code>jimp</code>的<code>diff</code>来进行像素对比，并输出差异结果，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//原图</span></span><br><span class="line"><span class="keyword">let</span> origin_img = <span class="keyword">await</span> <span class="title class_">Jimp</span>.<span class="title function_">read</span>(origin)</span><br><span class="line"><span class="comment">//模板</span></span><br><span class="line"><span class="keyword">let</span> template_img = <span class="keyword">await</span> <span class="title class_">Jimp</span>.<span class="title function_">read</span>(template)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> w = origin_img.<span class="property">bitmap</span>.<span class="property">width</span></span><br><span class="line"><span class="keyword">const</span> h = origin_img.<span class="property">bitmap</span>.<span class="property">height</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> dst_w = template_img.<span class="property">bitmap</span>.<span class="property">width</span></span><br><span class="line"><span class="keyword">const</span> dst_h = template_img.<span class="property">bitmap</span>.<span class="property">height</span> - <span class="number">400</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 头尾大概可以截掉两百像素</span></span><br><span class="line">template_img.<span class="title function_">crop</span>(<span class="number">0</span>, <span class="number">200</span>, dst_w, dst_h).<span class="title function_">write</span>(<span class="string">&#x27;temp/template.jpg&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="attr">temp_img</span>:any = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 比较图片大小,小的作为模板</span></span><br><span class="line"><span class="keyword">if</span> (dst_w &gt;= w &amp;&amp; dst_h &gt;= h) &#123;</span><br><span class="line">  temp_img = origin_img</span><br><span class="line">  origin_img = template_img</span><br><span class="line">  template_img = temp_img</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> src = cv.<span class="title function_">matFromImageData</span>(origin_img.<span class="property">bitmap</span>)</span><br><span class="line"><span class="keyword">const</span> templ = cv.<span class="title function_">matFromImageData</span>(template_img.<span class="property">bitmap</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> dst = <span class="keyword">new</span> cv.<span class="title class_">Mat</span>()</span><br><span class="line"><span class="keyword">const</span> mask = <span class="keyword">new</span> cv.<span class="title class_">Mat</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">//开始匹配</span></span><br><span class="line">cv.<span class="title function_">matchTemplate</span>(src, templ, dst, cv.<span class="property">TM_CCORR_NORMED</span>, mask)</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算匹配结果的矩形</span></span><br><span class="line"><span class="keyword">const</span> result = cv.<span class="title function_">minMaxLoc</span>(dst, mask)</span><br><span class="line"><span class="keyword">const</span> maxPoint = result.<span class="property">maxLoc</span></span><br><span class="line"><span class="keyword">const</span> point = <span class="keyword">new</span> cv.<span class="title class_">Point</span>(maxPoint.<span class="property">x</span> + templ.<span class="property">cols</span>, maxPoint.<span class="property">y</span> + templ.<span class="property">rows</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//裁切原图</span></span><br><span class="line"><span class="keyword">await</span> origin_img.<span class="title function_">crop</span>(maxPoint.<span class="property">x</span>, maxPoint.<span class="property">y</span>, point.<span class="property">x</span>, point.<span class="property">y</span> - maxPoint.<span class="property">y</span>).<span class="title function_">writeAsync</span>(<span class="string">&#x27;temp/origin.jpg&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//像素对比</span></span><br><span class="line"><span class="keyword">const</span> diff = <span class="title class_">Jimp</span>.<span class="title function_">diff</span>(origin_img, template_img, threshold)</span><br><span class="line"><span class="keyword">await</span> diff.<span class="property">image</span>.<span class="title function_">quality</span>(<span class="number">90</span>).<span class="title function_">writeAsync</span>(<span class="string">&#x27;temp/diff.jpg&#x27;</span>)</span><br><span class="line"></span><br><span class="line">src.<span class="title function_">delete</span>()</span><br><span class="line">dst.<span class="title function_">delete</span>()</span><br><span class="line">mask.<span class="title function_">delete</span>()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>下图就是跑完整个流程的一个结果，完全相同的部分是白色的，红色部分是不同区域，opencv的模板匹配和像素都可以输出一个相似度的百分比分值，相似度分值也可以根据阀值<code>threshold</code>来调节</p>
+<p><img src="https://img13.360buyimg.com/imagetools/jfs/t1/144460/15/26537/165841/61cd670fE8b8b4cc7/e7f933a11ec898ee.png" alt="截屏2021-08-03 下午3.32.19.png"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>最后还是得总结下做了这么多到底有没有用？答案是肯定的，首先对于DECO来说，我们目前的使用场景大多是输出组件或楼层代码，由于基本是静态数据，和设计稿进行像素对比是能准确发现ui上的问题的，比如某个商品的价格丢失了，那匹配率数值其实就会明显偏低了。还有就是效率的提升，一次执行就可以输出所有机型的差异图也节省了不少时间。</p>
+<h4 id="问题和迭代"><a href="#问题和迭代" class="headerlink" title="问题和迭代"></a>问题和迭代</h4><p>当然也存在一些问题，如果只是一屏或者一个楼层的对比（图片越小越好），那匹配度数值是可以反映出问题的，如果是很长页面对比呢，由于细微的像素差异也会被加进去，所以对比的准确度就要大打折扣了。在另一个使用场景下，我们对线上的活动进行对比，当然由于数据是动态的，对比图不可能是使用设计稿了，我们直接用<code>puppteer</code>截取了chrome下的长图和真机图片对比，由于页面是很长数值其实已经不够准确说明问题，所以目前就是人工看图，至少减少了一个个手机去测试的麻烦，后续想尝试的一些优化点是想通过AI的方式识别关键的楼层后去对比，这样也不需要前面的合图步骤了。</p>
+
+    <hr>
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"></div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </a>
+        <!-- © eijil 2015-2021 -->
+    </div>
+    <!-- <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://frankenstein-ashen.now.sh/">
+            Guestbook
+        </a>
+    </div> -->
+</div>
+</div>
+</footer>
+  <script src="/js/zoom-image.js"></script>
+<script type="text/javascript">
+var imgArr = document.getElementsByTagName('img')
+for (var i = 0; i < imgArr.length; i += 1) {
+  zoom(imgArr[i])
+}
+
+// dropdown scripts
+function $(s) { return document.querySelector(s)}
+function $$(s) { return document.querySelectorAll(s) }
+var dropDownElArr = $$('.dropdown')
+for (var i = 0; i < dropDownElArr.length; i += 1) {
+  dropDownElArr[i].addEventListener('click', function(event) {
+  var content = this.querySelector('.dropdown-content')
+  event.stopPropagation()
+  if (content.className.indexOf('open') < 0) {
+    content.classList.add('open')
+  } else {
+    content.classList.remove('open')
+  }
+})
+}
+document.body.addEventListener('click', function() {
+  var dropDownContentElArr = $$('.dropdown-content')
+  for (var i = 0; i < dropDownContentElArr.length; i += 1) {
+    dropDownContentElArr[i].classList.remove('open')
+  }
+})
+</script>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="referrer" content="unsafe-url">
+
+  
+  <title>H5游戏开发：套圈圈</title>
+  <meta name="author" content="JIEL">
+  <meta name="description" content="hello world">
+  
+  
+  <meta property="og:title" content="H5游戏开发：套圈圈"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="blog"/>
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/disqusjs.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- 
+      <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/styles/default.min.css">
+      
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.1.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> -->
+
+  
+
+
+  <script src="/js/disqus.js"></script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <a id="top"></a>
+  <div id="main">
+    <div class="main-ctnr">
+      <div class="behind">
+  <a href="/" class="back black-color">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  </a>
+  <div class="description">
+    &nbsp;hello world
+  </div>
+</div>
+
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title">
+        H5游戏开发：套圈圈
+    </h1>
+  
+
+
+    </div>
+    <div class="page-meta center">
+      <time datetime="2016-06-02T16:00:00.000Z" itemprop="datePublished">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+    2016-06-03
+</time>
+
+
+
+
+
+
+<div class="reading">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    <span id="busuanzi_value_page_pv">…</span>
+</div>
+
+    </div>
+    <hr>
+    
+    <div class="picture-container">
+      
+    </div>
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>套圈圈游戏相信很多人小时候都玩过，玩法简单就不用介绍了，本文主要分享下开发过程中遇到的问题和解决思路</p>
+<p>游戏体验地址：</p>
+<p><img src="https://img13.360buyimg.com/imagetools/jfs/t1/35551/10/6013/45115/5cc18c57E98303c70/fc794557ddccefcf.png"></p>
+<h2 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h2><h5 id="Phaser-amp-P2"><a href="#Phaser-amp-P2" class="headerlink" title="Phaser  &amp; P2"></a>Phaser  &amp; P2</h5><p>游戏框架原理都是差不多的，基本就是创建场景，精灵，主循环等等，只是每个框架写法不同而已,所以在选择框架的时候我还是考虑以下几点，文档是否完善、API是否易用，demo是否丰富、社区活跃度，最终对比后选择了<a target="_blank" rel="noopener" href="http://phaser.io/">Phaer</a>框架，物理引擎使用Phaser中已经自带的P2</p>
+<h2 id="设置物理碰撞区域"><a href="#设置物理碰撞区域" class="headerlink" title="设置物理碰撞区域"></a>设置物理碰撞区域</h2><p><img src="https://img11.360buyimg.com/imagetools/s314x340_jfs/t1/33137/31/7262/402066/5cc1580fEa3cb7e0e/197d152c09382199.png" alt="img"></p>
+<p>上图是游戏中的主要碰撞区域，主要有3块 容器边框、两根针、和圈圈。</p>
+<p>容器边框和针比较清晰，都是静态的直接设置成矩形就可以<br>最主要的还是考虑是圈怎么设置，我们不能直接把整个圈就弄成一个碰撞区域，这样圈也无法套进指针</p>
+<p>那怎么设置呢，其实也很简单，将个2D画面想象成3D的话 我们其实只需要设置左右两个点的区域就行了，并且将点设置成圆形的，如果是矩形可能圈掉下来的时候不会倒下。</p>
+<h2 id="模拟水中发力"><a href="#模拟水中发力" class="headerlink" title="模拟水中发力"></a>模拟水中发力</h2><p>接下来是实现按下按钮圈圈飘起来的效果</p>
+<p>可以分为两点</p>
+<ol>
+<li>模拟水中的效果</li>
+<li>按下按钮模拟一个水的冲力</li>
+</ol>
+<p>第一点比较其实比较简单，依靠物理引擎我们只需要将重力值调低，效果就跟在水中类似，重点还是要实现按下按钮后向上的冲力,首先想到就是查查物理引擎中有没有能实现往一个坐标点施加力的方法，最后试了几个方法还是不行，所以想到另一种方法就是按下按钮的时候给10个圈都加一个向上的力，力会根据左右位置递减，例如按下左边按钮的时候，左边的力是最大的，越往右越低，这样也是实现了一个往上冲的力。</p>
+<p>代码实现呢就当按下按钮是 循环这10个圈，判断圈坐标然后给不同的力度<br>为了显得更真实，超过一定距离就不施加力了</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//按下左边按钮</span></span><br><span class="line"> <span class="variable language_">this</span>.<span class="property">quans</span>.<span class="title function_">forEachAlive</span>( <span class="function"><span class="params">quan</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">//屏幕一半</span></span><br><span class="line">       <span class="keyword">const</span> halfScreen = <span class="variable language_">this</span>.<span class="property">game</span>.<span class="property">width</span> / <span class="number">2</span></span><br><span class="line">      <span class="comment">//根据圈的x坐标力度递减</span></span><br><span class="line">       <span class="keyword">let</span> vy = <span class="variable language_">this</span>.<span class="property">game</span>.<span class="property">width</span> - quan.<span class="property">x</span></span><br><span class="line">       <span class="comment">//屏幕大于一半速度减更多</span></span><br><span class="line">       vy = vy &lt; halfScreen ? vy / <span class="number">2</span>:vy</span><br><span class="line">       <span class="comment">//施加力</span></span><br><span class="line">       <span class="keyword">if</span> (quan.<span class="property">x</span> &lt; halfScreen + quan.<span class="property">width</span>)&#123;</span><br><span class="line">           quan.<span class="property">body</span>.<span class="property">velocity</span>.<span class="property">y</span> = -vy * <span class="number">0.5</span></span><br><span class="line">        &#125;</span><br><span class="line"> &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="模拟进圈"><a href="#模拟进圈" class="headerlink" title="模拟进圈"></a>模拟进圈</h2><p><img src="https://img12.360buyimg.com/imagetools/s73x152_jfs/t1/31638/2/15195/13141/5cc1580fE524bbbde/05277faee11dff66.png"></p>
+<p>如上图 我们的圈其实是就是一个贴图，怎么去实现”穿过”的效果呢?</p>
+<h5 id="使用两个精灵来实现"><a href="#使用两个精灵来实现" class="headerlink" title="使用两个精灵来实现"></a>使用两个精灵来实现</h5><p><img src="https://img11.360buyimg.com/imagetools/jfs/t1/31744/16/15308/7190/5cc1801cE39d8c237/77f6bf9be498cb06.png"></p>
+<p>一开始想到的就是创建两个圈，然后将图切成两半每个圈贴一半图，然后一个圈运动另一个圈跟随，但是发现机器性能太差或者运动很快的时候两个圈会衔接不上，出现错位效果不太理想，最后想到其实运动过程中只需显示一个圈就可以，另一个圈其实在套进去展示就可以，所以将一个圈的贴图改成完整的，跟随的圈只贴一半，如下：</p>
+<p><img src="https://img10.360buyimg.com/imagetools/jfs/t1/35451/28/5902/9527/5cc18063E3b3eca15/d7cebabdf389e2dc.png"></p>
+<p>这样进圈的问题就算解决了，有点瑕疵就是多了10个圈，可能对性能有一丢丢影响</p>
+<h2 id="计算得分"><a href="#计算得分" class="headerlink" title="计算得分"></a>计算得分</h2><h5 id="两线相交"><a href="#两线相交" class="headerlink" title="两线相交"></a>两线相交</h5><p>给圈和针做一条辅助线，我们发现其实只要两线相交那圈就是完全套进去，那怎么判断两条直线相交呢？ </p>
+<p>Phaser库中提供了一些数学方法，其中正好有判断两线相交的函数，直接调用即可，需要传入4个参数，分别是两条线的顶点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//两线相交</span><br><span class="line">const result1 = Phaser.Line.intersectsPoints(_this.line1.start, _this.line1.end, startPoint, endPoint, true);</span><br></pre></td></tr></table></figure>
+<p>两线相交的实现感兴趣的可以看下源码：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/photonstorm/phaser-ce/blob/04204f5180af319e3abdc895190543a9f9f9b7f3/src/geom/Line.js#L617">https://github.com/photonstorm/phaser-ce/blob/04204f5180af319e3abdc895190543a9f9f9b7f3/src/geom/Line.js#L617</a></p>
+<h5 id="如何获取圈的顶点"><a href="#如何获取圈的顶点" class="headerlink" title="如何获取圈的顶点"></a>如何获取圈的顶点</h5><p>调用intersectsPoints方法我们还需要获取4个顶点，针的两个顶点因为是静态所以我们可以直接写死，但是圈是不断运动的，我们还需要通过计算。</p>
+<p><img src="https://img12.360buyimg.com/imagetools/jfs/t1/41746/8/315/62367/5cc18485E0cc9e7d7/8da6c0e1ef20cda6.png"></p>
+<p>如上图 我们需要获取的是圈两端的坐标，当圈被创建的时候我们能得到是圈的中心点，圈的宽度，圈的角度，那通过三角函数我们就可以得到两端的坐标点</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//半径</span></span><br><span class="line"> <span class="keyword">var</span> r = <span class="variable language_">this</span>.<span class="property">quanWidth</span> / <span class="number">2</span> - <span class="variable language_">this</span>.<span class="property">quanBorder</span>; <span class="comment">//半径</span></span><br><span class="line"> <span class="comment">//圆点</span></span><br><span class="line"> <span class="keyword">var</span> x0 = frontquan.<span class="property">x</span>;</span><br><span class="line"> <span class="keyword">var</span> y0 = frontquan.<span class="property">y</span>;</span><br><span class="line"> <span class="comment">//StartPoint</span></span><br><span class="line"> <span class="keyword">var</span> startPoint = &#123;</span><br><span class="line">      <span class="attr">x</span>: x0 - r * <span class="title class_">Math</span>.<span class="title function_">cos</span>(frontquan.<span class="property">angle</span> * (<span class="title class_">Math</span>.<span class="property">PI</span> / <span class="number">180</span>)),</span><br><span class="line">      <span class="attr">y</span>: y0 - r * <span class="title class_">Math</span>.<span class="title function_">sin</span>(frontquan.<span class="property">angle</span> * (<span class="title class_">Math</span>.<span class="property">PI</span> / <span class="number">180</span>))</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">//EndPoint</span></span><br><span class="line"> <span class="keyword">var</span> endPoint = &#123;</span><br><span class="line">      <span class="attr">x</span>: x0 + r * <span class="title class_">Math</span>.<span class="title function_">cos</span>(-frontquan.<span class="property">angle</span> * (<span class="title class_">Math</span>.<span class="property">PI</span> / <span class="number">180</span>)),</span><br><span class="line">      <span class="attr">y</span>: y0 + r * <span class="title class_">Math</span>.<span class="title function_">sin</span>(frontquan.<span class="property">angle</span> * (<span class="title class_">Math</span>.<span class="property">PI</span> / <span class="number">180</span>))</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> result1 = <span class="title class_">Phaser</span>.<span class="property">Line</span>.<span class="title function_">intersectsPoints</span>(_this.<span class="property">line1</span>.<span class="property">start</span>, _this.<span class="property">line1</span>.<span class="property">end</span>, startPoint, endPoint, <span class="literal">true</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="陀螺仪"><a href="#陀螺仪" class="headerlink" title="陀螺仪"></a>陀螺仪</h2><p>最后还要实现一个功能就是根据手机陀螺仪，圈根据手机倾斜的方向移动，这样玩法会显得更真实。</p>
+<p>首先我们手机在倾斜的时候主要是gama值在变化，所以只需要监听gama值然后在更改物理引擎的x值就可以实现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">window.addEventListener(&#x27;deviceorientation&#x27;,(e)=&gt;&#123;</span><br><span class="line">            const maxAngle = 30 </span><br><span class="line">            const gamma = Math.abs(e.gamma) &gt; maxAngle ? maxAngle : e.gamma</span><br><span class="line">            this.water.angle = -gamma</span><br><span class="line">            this.physics.p2.gravity.x = gamma</span><br><span class="line"> &#125;,false)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>这次的分享就写到这了，游戏开发其实还会遇到各种各样的问题，如各种手机适配问题、音频问题等、下次有机会再分享，有问题可以在底下留言讨论或咚咚</p>
+
+    <hr>
+  </article>
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    
+
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"></div>
+<div class="right-foot">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        </a>
+        <!-- © eijil 2015-2021 -->
+    </div>
+    <!-- <div class="secondrow">
+        <a target="_blank" rel="noopener" href="https://frankenstein-ashen.now.sh/">
+            Guestbook
+        </a>
+    </div> -->
+</div>
+</div>
+</footer>
+  <script src="/js/zoom-image.js"></script>
+<script type="text/javascript">
+var imgArr = document.getElementsByTagName('img')
+for (var i = 0; i < imgArr.length; i += 1) {
+  zoom(imgArr[i])
+}
+
+// dropdown scripts
+function $(s) { return document.querySelector(s)}
+function $$(s) { return document.querySelectorAll(s) }
+var dropDownElArr = $$('.dropdown')
+for (var i = 0; i < dropDownElArr.length; i += 1) {
+  dropDownElArr[i].addEventListener('click', function(event) {
+  var content = this.querySelector('.dropdown-content')
+  event.stopPropagation()
+  if (content.className.indexOf('open') < 0) {
+    content.classList.add('open')
+  } else {
+    content.classList.remove('open')
+  }
+})
+}
+document.body.addEventListener('click', function() {
+  var dropDownContentElArr = $$('.dropdown-content')
+  for (var i = 0; i < dropDownContentElArr.length; i += 1) {
+    dropDownContentElArr[i].classList.remove('open')
+  }
+})
+</script>
+
+</body>
+</html>
